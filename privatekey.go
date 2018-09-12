@@ -15,7 +15,6 @@ import (
 type PrivateKey struct {
 	privkey *ecdsa.PrivateKey
 	pubkey  PublicKey
-	address Address
 }
 
 // NewPrivateKey TODO
@@ -55,18 +54,12 @@ func NewPrivateKeyFromBytes(pk []byte) (*PrivateKey, error) {
 func (ac *PrivateKey) calcPubkey() error {
 	pk := ecrypto.CompressPubkey(&ac.privkey.PublicKey)
 	copy(ac.pubkey[:], pk[:])
-	ac.address = AddressFromPubkey(ac.pubkey)
 	return nil
 }
 
 // PublicKey TODO
 func (ac *PrivateKey) PublicKey() PublicKey {
 	return ac.pubkey
-}
-
-// Address TODO
-func (ac *PrivateKey) Address() Address {
-	return ac.address
 }
 
 // Sign TODO
