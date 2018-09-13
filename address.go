@@ -2,8 +2,9 @@ package common
 
 import (
 	"bytes"
-	"encoding/hex"
 	"io"
+
+	"github.com/mr-tron/base58/base58"
 
 	"git.fleta.io/fleta/common/hash"
 	"git.fleta.io/fleta/common/util"
@@ -61,13 +62,7 @@ func ChecksumFromAddresses(addrs []Address) byte {
 
 // AddressFromString TODO
 func AddressFromString(str string) (Address, error) {
-	if len(str) != 2+AddressSize*2 {
-		return Address{}, ErrInvalidAddressFormat
-	}
-	if str[:2] != "0x" {
-		return Address{}, ErrInvalidAddressFormat
-	}
-	bs, err := hex.DecodeString(str[2:])
+	bs, err := base58.Decode(str)
 	if err != nil {
 		return Address{}, err
 	}
@@ -113,5 +108,5 @@ func (addr Address) Equal(b Address) bool {
 
 // String TODO
 func (addr Address) String() string {
-	return "0x" + hex.EncodeToString(addr[:])
+	return base58.Encode(addr[:])
 }
