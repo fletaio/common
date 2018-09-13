@@ -26,6 +26,14 @@ func AddressFromPubkey(crd Coordinate, t AddressType, pubkey PublicKey) Address 
 	return addr
 }
 
+// ConvertAddressType TODO
+func ConvertAddressType(addr Address, t AddressType) Address {
+	var a Address
+	copy(a[:], addr[:])
+	a[coordinateSize] = byte(t)
+	return a
+}
+
 // AddressFromHash TODO
 func AddressFromHash(crd Coordinate, t AddressType, h hash.Hash256, checksum byte) Address {
 	var addr Address
