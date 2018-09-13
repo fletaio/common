@@ -15,25 +15,29 @@ const AddressSize = 40
 // Address TODO
 type Address [AddressSize]byte
 
+// AddressType TODO
+type AddressType uint8
+
 // AddressFromPubkey TODO
-func AddressFromPubkey(crd Coordinate, pubkey PublicKey) Address {
+func AddressFromPubkey(crd Coordinate, t AddressType, pubkey PublicKey) Address {
 	var addr Address
 	idx := 0
 	copy(addr[idx:], crd[:])
 	idx += len(crd)
+	copy(addr[idx:], []byte{byte(t)})
+	idx++
 	phash := hash.DoubleHash(pubkey[:])
 	copy(addr[idx:], phash[:])
 	idx += len(phash)
 	cs := checksum(pubkey)
-	copy(addr[idx:], cs[:])
+	copy(addr[idx:], []byte{cs})
 	return addr
 }
 
-func checksum(pubkey PublicKey) []byte {
-	cs := make([]byte, 2)
+func checksum(pubkey PublicKey) byte {
+	var cs byte
 	for i := 0; i < len(pubkey)-1; i++ {
-		cs[0] = cs[0] ^ pubkey[i]
-		cs[1] = cs[1] ^ pubkey[i+1]
+		cs = cs ^ pubkey[i]
 	}
 	return cs
 }
