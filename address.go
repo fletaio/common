@@ -20,24 +20,41 @@ type AddressType uint8
 
 // AddressFromPubkey TODO
 func AddressFromPubkey(crd Coordinate, t AddressType, pubkey PublicKey) Address {
-	var addr Address
-	idx := 0
-	copy(addr[idx:], crd[:])
-	idx += len(crd)
-	copy(addr[idx:], []byte{byte(t)})
-	idx++
 	phash := hash.DoubleHash(pubkey[:])
-	copy(addr[idx:], phash[:])
-	idx += len(phash)
-	cs := checksum(pubkey)
-	copy(addr[idx:], []byte{cs})
+	addr := AddressFromHash(crd, t, phash, ChecksumFromPublicKey(pubkey))
 	return addr
 }
 
-func checksum(pubkey PublicKey) byte {
+// AddressFromHash TODO
+func AddressFromHash(crd Coordinate, t AddressType, h hash.Hash256, checksum byte) Address {
+	var addr Address
+	idx := 0
+	copy(addr[idx:], crd[:]) // 6 bytes
+	idx += len(crd)
+	copy(addr[idx:], []byte{byte(t)}) // 1 bytes
+	idx++
+	copy(addr[idx:], h[:]) // 32 bytes
+	idx += len(h)
+	addr[idx] = checksum // 1 bytes
+	return addr
+}
+
+// ChecksumFromPublicKey TODO
+func ChecksumFromPublicKey(pubkey PublicKey) byte {
 	var cs byte
-	for i := 0; i < len(pubkey)-1; i++ {
+	for i := 0; i < len(pubkey); i++ {
 		cs = cs ^ pubkey[i]
+	}
+	return cs
+}
+
+// ChecksumFromAddresses TODO
+func ChecksumFromAddresses(addrs []Address) byte {
+	var cs byte
+	for _, addr := range addrs {
+		for i := 0; i < len(addr); i++ {
+			cs = cs ^ addr[i]
+		}
 	}
 	return cs
 }
@@ -60,6 +77,11 @@ func AddressFromString(str string) (Address, error) {
 	var addr Address
 	copy(addr[:], bs)
 	return addr, nil
+}
+
+// Type TODO
+func (addr Address) Type() AddressType {
+	return AddressType(addr[6])
 }
 
 // WriteTo TODO
@@ -92,18 +114,4 @@ func (addr Address) Equal(b Address) bool {
 // String TODO
 func (addr Address) String() string {
 	return "0x" + hex.EncodeToString(addr[:])
-}
-
-// MarshalJSON TODO
-func (addr Address) MarshalJSON() ([]byte, error) {
-	return []byte(`"` + addr.String() + `"`), nil
-}
-
-// Debug TODO
-func (addr Address) Debug() (string, error) {
-	if bs, err := addr.MarshalJSON(); err != nil {
-		return "", err
-	} else {
-		return string(bs), err
-	}
 }
