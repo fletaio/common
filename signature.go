@@ -44,17 +44,3 @@ func (sig Signature) Equal(b Signature) bool {
 func (sig Signature) String() string {
 	return hex.EncodeToString(sig[:])
 }
-
-// MarshalJSON TODO
-func (sig Signature) MarshalJSON() ([]byte, error) {
-	return []byte(`"` + sig.String() + `"`), nil
-}
-
-// Debug TODO
-func (sig Signature) Debug() (string, error) {
-	if bs, err := sig.MarshalJSON(); err != nil {
-		return "", err
-	} else {
-		return string(bs), err
-	}
-}

@@ -12,6 +12,14 @@ type Queue struct {
 	size  int
 }
 
+// NewQueue TODO
+func NewQueue() *Queue {
+	q := &Queue{
+		pages: make([]*queuePage, 0, 256),
+	}
+	return q
+}
+
 // Push TODO
 func (q *Queue) Push(item interface{}) {
 	q.Lock()

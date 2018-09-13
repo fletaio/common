@@ -51,17 +51,3 @@ func (pubkey PublicKey) Equal(b PublicKey) bool {
 func (pubkey PublicKey) String() string {
 	return hex.EncodeToString(pubkey[:])
 }
-
-// MarshalJSON TODO
-func (pubkey PublicKey) MarshalJSON() ([]byte, error) {
-	return []byte(`"` + pubkey.String() + `"`), nil
-}
-
-// Debug TODO
-func (pubkey PublicKey) Debug() (string, error) {
-	if bs, err := pubkey.MarshalJSON(); err != nil {
-		return "", err
-	} else {
-		return string(bs), err
-	}
-}
