@@ -36,12 +36,6 @@ func (pubkey *PublicKey) ReadFrom(r io.Reader) (int64, error) {
 	}
 }
 
-// Reset TODO
-func (pubkey *PublicKey) Reset() {
-	var empty PublicKey
-	copy(pubkey[:], empty[:])
-}
-
 // Equal TODO
 func (pubkey PublicKey) Equal(b PublicKey) bool {
 	return bytes.Equal(pubkey[:], b[:])

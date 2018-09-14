@@ -19,6 +19,43 @@ type Address [AddressSize]byte
 // AddressType TODO
 type AddressType uint8
 
+// Type TODO
+func (addr Address) Type() AddressType {
+	return AddressType(addr[6])
+}
+
+// WriteTo TODO
+func (addr *Address) WriteTo(w io.Writer) (int64, error) {
+	if n, err := w.Write(addr[:]); err != nil {
+		return int64(n), err
+	} else if n != AddressSize {
+		return int64(n), util.ErrInvalidLength
+	} else {
+		return int64(n), nil
+	}
+}
+
+// ReadFrom TODO
+func (addr *Address) ReadFrom(r io.Reader) (int64, error) {
+	if n, err := r.Read(addr[:]); err != nil {
+		return int64(n), err
+	} else if n != AddressSize {
+		return int64(n), util.ErrInvalidLength
+	} else {
+		return int64(n), nil
+	}
+}
+
+// Equal TODO
+func (addr Address) Equal(b Address) bool {
+	return bytes.Equal(addr[:], b[:])
+}
+
+// String TODO
+func (addr Address) String() string {
+	return base58.Encode(addr[:])
+}
+
 // AddressFromPubkey TODO
 func AddressFromPubkey(crd Coordinate, t AddressType, pubkey PublicKey) Address {
 	phash := hash.DoubleHash(pubkey[:])
@@ -80,41 +117,4 @@ func AddressFromString(str string) (Address, error) {
 	var addr Address
 	copy(addr[:], bs)
 	return addr, nil
-}
-
-// Type TODO
-func (addr Address) Type() AddressType {
-	return AddressType(addr[6])
-}
-
-// WriteTo TODO
-func (addr *Address) WriteTo(w io.Writer) (int64, error) {
-	if n, err := w.Write(addr[:]); err != nil {
-		return int64(n), err
-	} else if n != AddressSize {
-		return int64(n), util.ErrInvalidLength
-	} else {
-		return int64(n), nil
-	}
-}
-
-// ReadFrom TODO
-func (addr *Address) ReadFrom(r io.Reader) (int64, error) {
-	if n, err := r.Read(addr[:]); err != nil {
-		return int64(n), err
-	} else if n != AddressSize {
-		return int64(n), util.ErrInvalidLength
-	} else {
-		return int64(n), nil
-	}
-}
-
-// Equal TODO
-func (addr Address) Equal(b Address) bool {
-	return bytes.Equal(addr[:], b[:])
-}
-
-// String TODO
-func (addr Address) String() string {
-	return base58.Encode(addr[:])
 }
