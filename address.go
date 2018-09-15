@@ -57,7 +57,7 @@ func (addr Address) String() string {
 }
 
 // AddressFromPubkey TODO
-func AddressFromPubkey(crd Coordinate, t AddressType, pubkey PublicKey) Address {
+func AddressFromPubkey(crd *Coordinate, t AddressType, pubkey PublicKey) Address {
 	phash := hash.DoubleHash(pubkey[:])
 	addr := AddressFromHash(crd, t, phash, ChecksumFromPublicKey(pubkey))
 	return addr
@@ -72,11 +72,11 @@ func ConvertAddressType(addr Address, t AddressType) Address {
 }
 
 // AddressFromHash TODO
-func AddressFromHash(crd Coordinate, t AddressType, h hash.Hash256, checksum byte) Address {
+func AddressFromHash(crd *Coordinate, t AddressType, h hash.Hash256, checksum byte) Address {
 	var addr Address
 	idx := 0
-	copy(addr[idx:], crd[:]) // 6 bytes
-	idx += len(crd)
+	copy(addr[idx:], crd.Bytes()) // 6 bytes
+	idx += coordinateSize
 	copy(addr[idx:], []byte{byte(t)}) // 1 bytes
 	idx++
 	copy(addr[idx:], h[:]) // 32 bytes
