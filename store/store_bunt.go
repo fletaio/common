@@ -76,8 +76,8 @@ func (st *Bunt) Delete(key []byte) error {
 
 // Scan TODO
 func (st *Bunt) Scan(prefix []byte) ([][]byte, [][]byte, error) {
-	var keys [][]byte
-	var values [][]byte
+	keys := make([][]byte, 0)
+	values := make([][]byte, 0)
 	if err := st.db.View(func(tx *buntdb.Tx) error {
 		tx.Ascend("", func(k, v string) bool {
 			if len(k) >= len(prefix) {

@@ -118,8 +118,8 @@ func (st *Badger) Delete(key []byte) error {
 
 // Scan TODO
 func (st *Badger) Scan(prefix []byte) ([][]byte, [][]byte, error) {
-	var keys [][]byte
-	var values [][]byte
+	keys := make([][]byte, 0)
+	values := make([][]byte, 0)
 	if err := st.db.View(func(txn *badger.Txn) error {
 		opts := badger.DefaultIteratorOptions
 		it := txn.NewIterator(opts)

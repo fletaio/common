@@ -53,8 +53,8 @@ func (st *LevelDB) Delete(key []byte) error {
 
 // Scan TODO
 func (st *LevelDB) Scan(prefix []byte) ([][]byte, [][]byte, error) {
-	var keys [][]byte
-	var values [][]byte
+	keys := make([][]byte, 0)
+	values := make([][]byte, 0)
 	var r *util.Range
 	if prefix != nil {
 		r = util.BytesPrefix(prefix)
