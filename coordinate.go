@@ -2,11 +2,14 @@ package common
 
 import (
 	"encoding/binary"
+	"encoding/hex"
 	"io"
-	"strconv"
+
+	"git.fleta.io/fleta/common/util"
 )
 
-const coordinateSize = 6
+// CoordinateSize TODO
+const CoordinateSize = 6
 
 // Coordinate TODO
 type Coordinate struct {
@@ -16,35 +19,40 @@ type Coordinate struct {
 
 // WriteTo TODO
 func (crd *Coordinate) WriteTo(w io.Writer) (int64, error) {
-	/*
-		if n, err := w.Write(crd[:]); err != nil {
-			return int64(n), err
-		} else if n != coordinateSize {
-			return int64(n), util.ErrInvalidLength
-		} else {
-			return int64(n), nil
-		}
-	*/
+	var wrote int64
+	if n, err := util.WriteUint32(w, crd.Height); err != nil {
+		return wrote, err
+	} else {
+		wrote += n
+	}
+	if n, err := util.WriteUint16(w, crd.Index); err != nil {
+		return wrote, err
+	} else {
+		wrote += n
+	}
 	return 0, nil
 }
 
 // ReadFrom TODO
 func (crd *Coordinate) ReadFrom(r io.Reader) (int64, error) {
-	/*
-		if n, err := r.Read(crd[:]); err != nil {
-			return int64(n), err
-		} else if n != coordinateSize {
-			return int64(n), util.ErrInvalidLength
-		} else {
-			return int64(n), nil
-		}
-	*/
+	var read int64
+	if v, n, err := util.ReadUint32(r); err != nil {
+		return read, err
+	} else {
+		read += n
+		crd.Height = v
+	}
+	if v, n, err := util.ReadUint16(r); err != nil {
+		return read, err
+	} else {
+		read += n
+		crd.Index = v
+	}
 	return 0, nil
 }
 
 // Equal TODO
 func (crd *Coordinate) Equal(b *Coordinate) bool {
-	//return bytes.Equal(crd[:], b[:])
 	return crd.Height == b.Height && crd.Index == b.Index
 }
 
@@ -61,12 +69,10 @@ func (crd *Coordinate) Bytes() []byte {
 	bs := make([]byte, 6)
 	binary.LittleEndian.PutUint32(bs, crd.Height)
 	binary.LittleEndian.PutUint16(bs[4:], crd.Index)
-	//return hex.EncodeToString(crd[:])
 	return bs
 }
 
 // String TODO
 func (crd *Coordinate) String() string {
-	return strconv.FormatUint(uint64(crd.Height)<<16+uint64(crd.Index), 10)
-	//return hex.EncodeToString(crd[:])
+	return hex.EncodeToString(crd.Bytes())
 }
