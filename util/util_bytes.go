@@ -55,6 +55,23 @@ func WriteUint8(w io.Writer, num uint8) (int64, error) {
 	}
 }
 
+// WriteBytes8 TODO
+func WriteBytes8(w io.Writer, bs []byte) (int64, error) {
+	var wrote int64
+	n, err := WriteUint8(w, uint8(len(bs)))
+	if err != nil {
+		return wrote, err
+	} else {
+		wrote += n
+	}
+	if n, err := w.Write(bs); err != nil {
+		return wrote, err
+	} else {
+		wrote += int64(n)
+	}
+	return wrote, nil
+}
+
 // WriteBytes TODO
 func WriteBytes(w io.Writer, bs []byte) (int64, error) {
 	var wrote int64
@@ -70,6 +87,11 @@ func WriteBytes(w io.Writer, bs []byte) (int64, error) {
 		wrote += int64(n)
 	}
 	return wrote, nil
+}
+
+// WriteString8 TODO
+func WriteString8(w io.Writer, str string) (int64, error) {
+	return WriteBytes8(w, []byte(str))
 }
 
 // WriteString TODO
@@ -154,6 +176,33 @@ func ReadBytes(r io.Reader) ([]byte, int64, error) {
 		}
 	}
 	return bs, read, nil
+}
+
+// ReadBytes8 TODO
+func ReadBytes8(r io.Reader) ([]byte, int64, error) {
+	var bs []byte
+	var read int64
+	if Len, n, err := ReadUint8(r); err != nil {
+		return nil, read, err
+	} else {
+		read += n
+		bs = make([]byte, Len)
+		if n, err := r.Read(bs); err != nil {
+			return nil, read, err
+		} else {
+			read += int64(n)
+		}
+	}
+	return bs, read, nil
+}
+
+// ReadString8 TODO
+func ReadString8(r io.Reader) (string, int64, error) {
+	if bs, n, err := ReadBytes8(r); err != nil {
+		return "", n, err
+	} else {
+		return string(bs), n, err
+	}
 }
 
 // ReadString TODO
