@@ -10,7 +10,7 @@ import (
 )
 
 // PublicHashSize TODO
-const PublicHashSize = 33
+const PublicHashSize = 31
 
 // PublicHash TODO
 type PublicHash [PublicHashSize]byte
@@ -20,7 +20,7 @@ func NewPublicHash(pubkey PublicKey) PublicHash {
 	h := hash.DoubleHash(pubkey[:])
 	var ph PublicHash
 	ph[0] = ChecksumFromPublicKey(pubkey)
-	copy(ph[1:], h[:])
+	copy(ph[1:], h[:len(h)-2])
 	return ph
 }
 
