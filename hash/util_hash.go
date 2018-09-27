@@ -23,10 +23,10 @@ func DoubleHash(data []byte) Hash256 {
 
 // TwoHash TODO
 func TwoHash(h1 Hash256, h2 Hash256) Hash256 {
-	data := make([]byte, hash256Size*2+1)
+	data := make([]byte, Hash256Size*2+1)
 	copy(data, h1[:])
-	data[hash256Size] = 'h'
-	copy(data[hash256Size+1:], h2[:])
+	data[Hash256Size] = 'h'
+	copy(data[Hash256Size+1:], h2[:])
 	return Hash(data)
 }
 
@@ -36,7 +36,7 @@ func ParseHex(str string) (Hash256, error) {
 	if err != nil {
 		return Hash256{}, err
 	}
-	if len(bs) != hash256Size {
+	if len(bs) != Hash256Size {
 		return Hash256{}, ErrInvalidHashSize
 	}
 	var h Hash256
