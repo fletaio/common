@@ -44,3 +44,10 @@ func (sig Signature) Equal(b Signature) bool {
 func (sig Signature) String() string {
 	return hex.EncodeToString(sig[:])
 }
+
+// Clone TODO
+func (sig Signature) Clone() Signature {
+	var cp Signature
+	copy(cp[:], sig[:])
+	return cp
+}

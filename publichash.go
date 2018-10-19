@@ -25,8 +25,8 @@ func NewPublicHash(pubkey PublicKey) PublicHash {
 }
 
 // WriteTo TODO
-func (pubkey *PublicHash) WriteTo(w io.Writer) (int64, error) {
-	if n, err := w.Write(pubkey[:]); err != nil {
+func (pubhash *PublicHash) WriteTo(w io.Writer) (int64, error) {
+	if n, err := w.Write(pubhash[:]); err != nil {
 		return int64(n), err
 	} else if n != PublicHashSize {
 		return int64(n), util.ErrInvalidLength
@@ -36,8 +36,8 @@ func (pubkey *PublicHash) WriteTo(w io.Writer) (int64, error) {
 }
 
 // ReadFrom TODO
-func (pubkey *PublicHash) ReadFrom(r io.Reader) (int64, error) {
-	if n, err := r.Read(pubkey[:]); err != nil {
+func (pubhash *PublicHash) ReadFrom(r io.Reader) (int64, error) {
+	if n, err := r.Read(pubhash[:]); err != nil {
 		return int64(n), err
 	} else if n != PublicHashSize {
 		return int64(n), util.ErrInvalidLength
@@ -47,20 +47,27 @@ func (pubkey *PublicHash) ReadFrom(r io.Reader) (int64, error) {
 }
 
 // Equal TODO
-func (pubkey PublicHash) Equal(b PublicHash) bool {
-	return bytes.Equal(pubkey[:], b[:])
+func (pubhash PublicHash) Equal(b PublicHash) bool {
+	return bytes.Equal(pubhash[:], b[:])
 }
 
 // String TODO
-func (pubkey PublicHash) String() string {
-	return hex.EncodeToString(pubkey[:])
+func (pubhash PublicHash) String() string {
+	return hex.EncodeToString(pubhash[:])
+}
+
+// Clone TODO
+func (pubhash PublicHash) Clone() PublicHash {
+	var cp PublicHash
+	copy(cp[:], pubhash[:])
+	return cp
 }
 
 // ChecksumFromPublicKey TODO
-func ChecksumFromPublicKey(pubkey PublicKey) byte {
+func ChecksumFromPublicKey(pubhash PublicKey) byte {
 	var cs byte
-	for i := 0; i < len(pubkey); i++ {
-		cs = cs ^ pubkey[i]
+	for i := 0; i < len(pubhash); i++ {
+		cs = cs ^ pubhash[i]
 	}
 	return cs
 }

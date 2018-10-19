@@ -8,7 +8,9 @@ import (
 // Hash TODO
 func Hash(data []byte) Hash256 {
 	h := sha256.New()
-	h.Write(data)
+	if _, err := h.Write(data); err != nil {
+		panic(err)
+	}
 	bs := h.Sum(nil)
 	var hash Hash256
 	copy(hash[:], bs)

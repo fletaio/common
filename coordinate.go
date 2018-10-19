@@ -17,6 +17,14 @@ type Coordinate struct {
 	Index  uint16
 }
 
+// NewCoordinate TODO
+func NewCoordinate(Height uint32, Index uint16) *Coordinate {
+	return &Coordinate{
+		Height: Height,
+		Index:  Index,
+	}
+}
+
 // WriteTo TODO
 func (crd *Coordinate) WriteTo(w io.Writer) (int64, error) {
 	var wrote int64
@@ -75,6 +83,11 @@ func (crd *Coordinate) Bytes() []byte {
 	binary.LittleEndian.PutUint32(bs, crd.Height)
 	binary.LittleEndian.PutUint16(bs[4:], crd.Index)
 	return bs
+}
+
+// ID TODO
+func (crd *Coordinate) ID() uint64 {
+	return uint64(crd.Height)<<32 | uint64(crd.Index)<<16
 }
 
 // String TODO

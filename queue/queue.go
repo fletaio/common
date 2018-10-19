@@ -40,6 +40,19 @@ func (q *Queue) Push(item interface{}) {
 	q.size++
 }
 
+// Peek TODO
+func (q *Queue) Peek() interface{} {
+	q.Lock()
+	defer q.Unlock()
+
+	if len(q.pages) == 0 {
+		return nil
+	}
+	page := q.pages[0]
+	item := page.Peek()
+	return item
+}
+
 // Pop TODO
 func (q *Queue) Pop() interface{} {
 	q.Lock()
@@ -56,6 +69,14 @@ func (q *Queue) Pop() interface{} {
 	}
 	q.size--
 	return item
+}
+
+// Size TODO
+func (q *Queue) Size() int {
+	q.Lock()
+	defer q.Unlock()
+
+	return q.size
 }
 
 var queuePagePool = sync.Pool{
@@ -82,6 +103,15 @@ func (page *queuePage) Push(item interface{}) error {
 	page.tail = (page.tail + 1) % page.Cap()
 	page.size++
 	return nil
+}
+
+// Peek TODO
+func (page *queuePage) Peek() interface{} {
+	if page.Len() == 0 {
+		return nil
+	}
+	item := page.queue[page.head]
+	return item
 }
 
 // Pop TODO

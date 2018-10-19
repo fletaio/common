@@ -45,3 +45,10 @@ func (pubkey PublicKey) Equal(b PublicKey) bool {
 func (pubkey PublicKey) String() string {
 	return hex.EncodeToString(pubkey[:])
 }
+
+// Clone TODO
+func (pubkey PublicKey) Clone() PublicKey {
+	var cp PublicKey
+	copy(cp[:], pubkey[:])
+	return cp
+}

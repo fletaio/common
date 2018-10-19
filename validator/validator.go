@@ -28,47 +28,43 @@ func NewValidator() *Validator {
 }
 
 // Request TODO
-func (vr *Validator) Request(ID int, h hash.Hash256, sig common.Signature, addr common.Address) *Response {
+func (vr *Validator) Request(h hash.Hash256, sigs []common.Signature) []common.PublicHash {
 	req := requestPool.Get().(*request)
-	req.ID = ID
 	req.Hash = h
-	req.Signature = sig
-	req.Address = addr
+	req.Signatures = sigs
 	vr.requestChan <- req
-	return req.Response
+	return <-req.Response.C
 }
 
 func (vr *Validator) worker() {
 	for req := range vr.requestChan {
-		pubkey, _ := common.RecoverPubkey(req.Hash, req.Signature)
-		addr := common.AddressFromPubkey(pubkey)
-		if !addr.Equal(req.Address) {
-			req.Response.C <- ErrInvalidPublicKey
-		} else {
-			req.Response.C <- nil
+		PublicHashes := make([]common.PublicHash, 0, len(req.Signatures))
+		for _, sig := range req.Signatures {
+			pubkey, _ := common.RecoverPubkey(req.Hash, sig)
+			pubhash := common.NewPublicHash(pubkey)
+			PublicHashes = append(PublicHashes, pubhash)
 		}
+		req.Response.C <- PublicHashes
 		requestPool.Put(req)
 	}
 }
 
 type request struct {
-	ID        int
-	Hash      hash.Hash256
-	Signature common.Signature
-	Address   common.Address
-	Response  *Response
+	Hash       hash.Hash256
+	Signatures []common.Signature
+	Response   *Response
 }
 
 // Response TODO
 type Response struct {
-	C chan error
+	C chan []common.PublicHash
 }
 
 var requestPool = sync.Pool{
 	New: func() interface{} {
 		return &request{
 			Response: &Response{
-				C: make(chan error),
+				C: make(chan []common.PublicHash),
 			},
 		}
 	},
