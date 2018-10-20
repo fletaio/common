@@ -67,6 +67,14 @@ func (addr Address) Clone() Address {
 	return cp
 }
 
+// WithNonce TODO
+func (addr Address) WithNonce(nonce uint64) Address {
+	var cp Address
+	copy(cp[:], addr[:])
+	binary.LittleEndian.PutUint64(cp[12:], nonce)
+	return cp
+}
+
 // AddressFromString TODO
 func AddressFromString(str string) (Address, error) {
 	bs, err := base58.Decode(str)
