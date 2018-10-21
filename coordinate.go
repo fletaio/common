@@ -67,11 +67,6 @@ func (crd *Coordinate) ReadFrom(r io.Reader) (int64, error) {
 	return 0, nil
 }
 
-// IsMainchian TODO
-func (crd *Coordinate) IsMainchain() bool {
-	return crd.Height == 0 && crd.Index == 0
-}
-
 // Equal TODO
 func (crd *Coordinate) Equal(b *Coordinate) bool {
 	return crd.Height == b.Height && crd.Index == b.Index
