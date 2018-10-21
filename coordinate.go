@@ -25,6 +25,14 @@ func NewCoordinate(Height uint32, Index uint16) *Coordinate {
 	}
 }
 
+// NewCoordinateByID TODO
+func NewCoordinateByID(id uint64) *Coordinate {
+	return &Coordinate{
+		Height: uint32(id >> 32),
+		Index:  uint16(id >> 16),
+	}
+}
+
 // WriteTo TODO
 func (crd *Coordinate) WriteTo(w io.Writer) (int64, error) {
 	var wrote int64
