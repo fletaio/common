@@ -57,6 +57,9 @@ func WriteUint8(w io.Writer, num uint8) (int64, error) {
 
 // WriteBytes8 TODO
 func WriteBytes8(w io.Writer, bs []byte) (int64, error) {
+	if len(bs) > 255 {
+		return 0, ErrInvalidLength
+	}
 	var wrote int64
 	n, err := WriteUint8(w, uint8(len(bs)))
 	if err != nil {

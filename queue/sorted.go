@@ -54,7 +54,7 @@ func (q *SortedQueue) Peek() interface{} {
 	q.Lock()
 	defer q.Unlock()
 
-	if len(q.items) == 0 {
+	if q.size == 0 {
 		return nil
 	}
 	item := q.items[q.head]
@@ -66,7 +66,7 @@ func (q *SortedQueue) Pop() interface{} {
 	q.Lock()
 	defer q.Unlock()
 
-	if len(q.items) == 0 {
+	if q.size == 0 {
 		return nil
 	}
 	item := q.items[q.head]
