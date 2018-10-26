@@ -110,7 +110,7 @@ func WriteString(w io.Writer, str string) (int64, error) {
 	return WriteBytes(w, []byte(str))
 }
 
-// WriteBool TODO
+// WriteBool writes the bool using a uint8 to the writer
 func WriteBool(w io.Writer, b bool) (int64, error) {
 	if b {
 		return WriteUint8(w, 1)
@@ -119,7 +119,7 @@ func WriteBool(w io.Writer, b bool) (int64, error) {
 	}
 }
 
-// ReadUint64 TODO
+// ReadUint64 reads a uint64 number from the reader
 func ReadUint64(r io.Reader) (uint64, int64, error) {
 	BNum := make([]byte, 8)
 	n, err := r.Read(BNum)
@@ -132,7 +132,7 @@ func ReadUint64(r io.Reader) (uint64, int64, error) {
 	return binary.LittleEndian.Uint64(BNum), 8, nil
 }
 
-// ReadUint32 TODO
+// ReadUint32 reads a uint32 number from the reader
 func ReadUint32(r io.Reader) (uint32, int64, error) {
 	BNum := make([]byte, 4)
 	n, err := r.Read(BNum)
@@ -145,7 +145,7 @@ func ReadUint32(r io.Reader) (uint32, int64, error) {
 	return binary.LittleEndian.Uint32(BNum), 4, nil
 }
 
-// ReadUint16 TODO
+// ReadUint16 reads a uint16 number from the reader
 func ReadUint16(r io.Reader) (uint16, int64, error) {
 	BNum := make([]byte, 2)
 	n, err := r.Read(BNum)
@@ -158,7 +158,7 @@ func ReadUint16(r io.Reader) (uint16, int64, error) {
 	return binary.LittleEndian.Uint16(BNum), 2, nil
 }
 
-// ReadUint8 TODO
+// ReadUint8 reads a uint8 number from the reader
 func ReadUint8(r io.Reader) (uint8, int64, error) {
 	BNum := make([]byte, 1)
 	n, err := r.Read(BNum)
@@ -171,7 +171,7 @@ func ReadUint8(r io.Reader) (uint8, int64, error) {
 	return uint8(BNum[0]), 1, nil
 }
 
-// ReadBytes TODO
+// ReadBytes reads a byte array from the reader
 func ReadBytes(r io.Reader) ([]byte, int64, error) {
 	var bs []byte
 	var read int64
@@ -215,7 +215,7 @@ func ReadBytes(r io.Reader) ([]byte, int64, error) {
 	}
 }
 
-// ReadString TODO
+// ReadString reads a string array from the reader
 func ReadString(r io.Reader) (string, int64, error) {
 	if bs, n, err := ReadBytes(r); err != nil {
 		return "", n, err
@@ -224,7 +224,7 @@ func ReadString(r io.Reader) (string, int64, error) {
 	}
 }
 
-// ReadBool TODO
+// ReadBool reads a bool using a uint8 from the reader
 func ReadBool(r io.Reader) (bool, int64, error) {
 	if v, n, err := ReadUint8(r); err != nil {
 		return false, n, err

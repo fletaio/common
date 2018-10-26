@@ -2,7 +2,7 @@ package util
 
 import "errors"
 
+// util errors
 var (
-	// ErrInvalidLength TODO
 	ErrInvalidLength = errors.New("invalid length")
 )
