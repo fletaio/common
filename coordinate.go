@@ -8,16 +8,16 @@ import (
 	"git.fleta.io/fleta/common/util"
 )
 
-// CoordinateSize TODO
+// CoordinateSize is 6 bytes
 const CoordinateSize = 6
 
-// Coordinate TODO
+// Coordinate is (BlockHeight, TransactionIndexOfTheBlock)
 type Coordinate struct {
 	Height uint32
 	Index  uint16
 }
 
-// NewCoordinate TODO
+// NewCoordinate returns a Coordinate
 func NewCoordinate(Height uint32, Index uint16) *Coordinate {
 	return &Coordinate{
 		Height: Height,
@@ -25,7 +25,7 @@ func NewCoordinate(Height uint32, Index uint16) *Coordinate {
 	}
 }
 
-// NewCoordinateByID TODO
+// NewCoordinateByID returns a Coordinate using compacted id
 func NewCoordinateByID(id uint64) *Coordinate {
 	return &Coordinate{
 		Height: uint32(id >> 32),
@@ -33,7 +33,7 @@ func NewCoordinateByID(id uint64) *Coordinate {
 	}
 }
 
-// WriteTo TODO
+// WriteTo is a serialization function
 func (crd *Coordinate) WriteTo(w io.Writer) (int64, error) {
 	var wrote int64
 	if n, err := util.WriteUint32(w, crd.Height); err != nil {
@@ -49,7 +49,7 @@ func (crd *Coordinate) WriteTo(w io.Writer) (int64, error) {
 	return 0, nil
 }
 
-// ReadFrom TODO
+// ReadFrom is a deserialization function
 func (crd *Coordinate) ReadFrom(r io.Reader) (int64, error) {
 	var read int64
 	if v, n, err := util.ReadUint32(r); err != nil {
@@ -67,12 +67,12 @@ func (crd *Coordinate) ReadFrom(r io.Reader) (int64, error) {
 	return 0, nil
 }
 
-// Equal TODO
+// Equal checks compare two values and returns true or false
 func (crd *Coordinate) Equal(b *Coordinate) bool {
 	return crd.Height == b.Height && crd.Index == b.Index
 }
 
-// Clone TODO
+// Clone returns the clonend value of it
 func (crd *Coordinate) Clone() *Coordinate {
 	return &Coordinate{
 		Height: crd.Height,
@@ -80,7 +80,7 @@ func (crd *Coordinate) Clone() *Coordinate {
 	}
 }
 
-// Bytes TODO
+// Bytes returns a byte array
 func (crd *Coordinate) Bytes() []byte {
 	bs := make([]byte, 6)
 	binary.LittleEndian.PutUint32(bs, crd.Height)
@@ -88,12 +88,12 @@ func (crd *Coordinate) Bytes() []byte {
 	return bs
 }
 
-// ID TODO
+// ID returns a compacted id
 func (crd *Coordinate) ID() uint64 {
 	return uint64(crd.Height)<<32 | uint64(crd.Index)<<16
 }
 
-// String TODO
+// String returns a hex value of the byte array
 func (crd *Coordinate) String() string {
 	return hex.EncodeToString(crd.Bytes())
 }

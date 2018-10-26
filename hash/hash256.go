@@ -36,7 +36,7 @@ func (hash *Hash256) ReadFrom(r io.Reader) (int64, error) {
 	}
 }
 
-// Equal checks compare two hash and returns true or false
+// Equal checks compare two values and returns true or false
 func (hash Hash256) Equal(h Hash256) bool {
 	return bytes.Equal(hash[:], h[:])
 }

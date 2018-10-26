@@ -9,7 +9,7 @@ import (
 	ecrypto "github.com/ethereum/go-ethereum/crypto"
 )
 
-// RecoverPubkey TODO
+// RecoverPubkey recover the public key using the hash value and the signature
 func RecoverPubkey(h hash.Hash256, sig Signature) (PublicKey, error) {
 	bs, err := ecrypto.Ecrecover(h[:], sig[:])
 	if err != nil {
@@ -26,9 +26,9 @@ func RecoverPubkey(h hash.Hash256, sig Signature) (PublicKey, error) {
 	return pubkey, nil
 }
 
-// VerifySignature TODO
-func VerifySignature(pubkey PublicKey, h []byte, sig Signature) error {
-	if !ecrypto.VerifySignature(pubkey[:], h, sig[:64]) {
+// VerifySignature checks the signature with the public key and the hash value
+func VerifySignature(pubkey PublicKey, h hash.Hash256, sig Signature) error {
+	if !ecrypto.VerifySignature(pubkey[:], h[:], sig[:64]) {
 		return ErrInvalidSignature
 	}
 	return nil
