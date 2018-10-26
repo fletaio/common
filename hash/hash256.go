@@ -8,12 +8,13 @@ import (
 	"git.fleta.io/fleta/common/util"
 )
 
+// Hash256Size is 32 bytes
 const Hash256Size = 32
 
-// Hash256 TODO
+// Hash256 is the [Hash256Size]byte with methods
 type Hash256 [Hash256Size]byte
 
-// WriteTo TODO
+// WriteTo is a sereialization function
 func (hash *Hash256) WriteTo(w io.Writer) (int64, error) {
 	if n, err := w.Write(hash[:]); err != nil {
 		return int64(n), err
@@ -24,7 +25,7 @@ func (hash *Hash256) WriteTo(w io.Writer) (int64, error) {
 	}
 }
 
-// ReadFrom TODO
+// ReadFrom is a desereialization function
 func (hash *Hash256) ReadFrom(r io.Reader) (int64, error) {
 	if n, err := r.Read(hash[:]); err != nil {
 		return int64(n), err
@@ -35,12 +36,12 @@ func (hash *Hash256) ReadFrom(r io.Reader) (int64, error) {
 	}
 }
 
-// Equal TODO
+// Equal checks compare two hash and returns true or false
 func (hash Hash256) Equal(h Hash256) bool {
 	return bytes.Equal(hash[:], h[:])
 }
 
-// String TODO
+// String returns the hex string of the hash
 func (hash Hash256) String() string {
 	return hex.EncodeToString(hash[:])
 }

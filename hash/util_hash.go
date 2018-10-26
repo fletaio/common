@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 )
 
-// Hash TODO
+// Hash returns the Hash256 value of the data
 func Hash(data []byte) Hash256 {
 	h := sha256.New()
 	if _, err := h.Write(data); err != nil {
@@ -17,13 +17,13 @@ func Hash(data []byte) Hash256 {
 	return hash
 }
 
-// DoubleHash TODO
+// DoubleHash returns the result of Hash(Hash(data))
 func DoubleHash(data []byte) Hash256 {
 	h1 := Hash(data)
 	return Hash(h1[:])
 }
 
-// TwoHash TODO
+// TwoHash returns the result of Hash(h1,'h',h2)
 func TwoHash(h1 Hash256, h2 Hash256) Hash256 {
 	data := make([]byte, Hash256Size*2+1)
 	copy(data, h1[:])
@@ -32,7 +32,7 @@ func TwoHash(h1 Hash256, h2 Hash256) Hash256 {
 	return Hash(data)
 }
 
-// ParseHex TODO
+// ParseHex parses the Hash256 from the hex string
 func ParseHex(str string) (Hash256, error) {
 	bs, err := hex.DecodeString(str)
 	if err != nil {
@@ -46,7 +46,7 @@ func ParseHex(str string) (Hash256, error) {
 	return h, nil
 }
 
-// MustParseHex TODO
+// MustParseHex panics when parsing fails.
 func MustParseHex(str string) Hash256 {
 	h, err := ParseHex(str)
 	if err != nil {
