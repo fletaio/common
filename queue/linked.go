@@ -4,24 +4,24 @@ import (
 	"git.fleta.io/fleta/common/hash"
 )
 
-// LinkedQueue TODO
+// LinkedQueue is designed to allow users to remove the item by the key
 type LinkedQueue struct {
-	Head    *LinkedItem
-	Tail    *LinkedItem
-	keyHash map[hash.Hash256]*LinkedItem
+	Head    *linkedItem
+	Tail    *linkedItem
+	keyHash map[hash.Hash256]*linkedItem
 }
 
-// NewLinkedQueue TODO
+// NewLinkedQueue make a LinkedQueue
 func NewLinkedQueue() *LinkedQueue {
 	q := &LinkedQueue{
-		keyHash: map[hash.Hash256]*LinkedItem{},
+		keyHash: map[hash.Hash256]*linkedItem{},
 	}
 	return q
 }
 
-// Push TODO
+// Push inserts the item with the key at the bottom of the queue
 func (q *LinkedQueue) Push(Key hash.Hash256, item interface{}) {
-	nd := &LinkedItem{
+	nd := &linkedItem{
 		Key:  Key,
 		Item: item,
 	}
@@ -36,7 +36,7 @@ func (q *LinkedQueue) Push(Key hash.Hash256, item interface{}) {
 	q.keyHash[Key] = nd
 }
 
-// Pop TODO
+// Pop returns a item at the top of the queue
 func (q *LinkedQueue) Pop() interface{} {
 	if q.Head == nil {
 		return nil
@@ -55,7 +55,7 @@ func (q *LinkedQueue) Pop() interface{} {
 	return nd.Item
 }
 
-// Remove TODO
+// Remove deletes a item by the key
 func (q *LinkedQueue) Remove(Key hash.Hash256) interface{} {
 	if q.Head == nil {
 		return nil
@@ -81,10 +81,9 @@ func (q *LinkedQueue) Remove(Key hash.Hash256) interface{} {
 	return nd.Item
 }
 
-// LinkedItem TODO
-type LinkedItem struct {
-	Prev *LinkedItem
+type linkedItem struct {
+	Prev *linkedItem
 	Key  hash.Hash256
 	Item interface{}
-	Next *LinkedItem
+	Next *linkedItem
 }

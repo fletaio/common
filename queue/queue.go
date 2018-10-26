@@ -5,14 +5,14 @@ import (
 	"sync"
 )
 
-// Queue TODO
+// Queue provides a basic queue ability with the peek method
 type Queue struct {
 	sync.Mutex
 	pages []*queuePage
 	size  int
 }
 
-// NewQueue TODO
+// NewQueue returns a Queue
 func NewQueue() *Queue {
 	q := &Queue{
 		pages: make([]*queuePage, 0, 256),
@@ -20,7 +20,7 @@ func NewQueue() *Queue {
 	return q
 }
 
-// Push TODO
+// Push inserts a item at the bottom of the queue
 func (q *Queue) Push(item interface{}) {
 	q.Lock()
 	defer q.Unlock()
@@ -31,16 +31,16 @@ func (q *Queue) Push(item interface{}) {
 		q.pages = append(q.pages, page)
 	} else {
 		page = q.pages[len(q.pages)-1]
-		if page.Len() == page.Cap() {
+		if page.size == page.cap() {
 			page = queuePagePool.Get().(*queuePage)
 			q.pages = append(q.pages, page)
 		}
 	}
-	page.Push(item)
+	page.push(item)
 	q.size++
 }
 
-// Peek TODO
+// Peek fetch the top item without removing it
 func (q *Queue) Peek() interface{} {
 	q.Lock()
 	defer q.Unlock()
@@ -49,11 +49,11 @@ func (q *Queue) Peek() interface{} {
 		return nil
 	}
 	page := q.pages[0]
-	item := page.Peek()
+	item := page.peek()
 	return item
 }
 
-// Pop TODO
+// Pop returns a item at the top of the queue
 func (q *Queue) Pop() interface{} {
 	q.Lock()
 	defer q.Unlock()
@@ -62,8 +62,8 @@ func (q *Queue) Pop() interface{} {
 		return nil
 	}
 	page := q.pages[0]
-	item := page.Pop()
-	if page.Len() == 0 && len(q.pages) > 1 {
+	item := page.pop()
+	if page.size == 0 && len(q.pages) > 1 {
 		queuePagePool.Put(page)
 		q.pages = q.pages[1:]
 	}
@@ -71,7 +71,7 @@ func (q *Queue) Pop() interface{} {
 	return item
 }
 
-// Size TODO
+// Size returns the number of items
 func (q *Queue) Size() int {
 	q.Lock()
 	defer q.Unlock()
@@ -94,43 +94,34 @@ type queuePage struct {
 	size  int
 }
 
-// Push TODO
-func (page *queuePage) Push(item interface{}) error {
-	if page.Len() >= page.Cap() {
+func (page *queuePage) push(item interface{}) error {
+	if page.size >= page.cap() {
 		return errFullQueue
 	}
 	page.queue[page.tail] = item
-	page.tail = (page.tail + 1) % page.Cap()
+	page.tail = (page.tail + 1) % page.cap()
 	page.size++
 	return nil
 }
 
-// Peek TODO
-func (page *queuePage) Peek() interface{} {
-	if page.Len() == 0 {
+func (page *queuePage) peek() interface{} {
+	if page.size == 0 {
 		return nil
 	}
 	item := page.queue[page.head]
 	return item
 }
 
-// Pop TODO
-func (page *queuePage) Pop() interface{} {
-	if page.Len() == 0 {
+func (page *queuePage) pop() interface{} {
+	if page.size == 0 {
 		return nil
 	}
 	item := page.queue[page.head]
-	page.head = (page.head + 1) % page.Cap()
+	page.head = (page.head + 1) % page.cap()
 	page.size--
 	return item
 }
 
-// Len TODO
-func (page *queuePage) Len() int {
-	return page.size
-}
-
-// Cap TODO
-func (page *queuePage) Cap() int {
+func (page *queuePage) cap() int {
 	return len(page.queue)
 }

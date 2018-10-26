@@ -5,7 +5,7 @@ import (
 	"sync"
 )
 
-// SortedQueue TODO
+// SortedQueue sorts items by the priority
 type SortedQueue struct {
 	sync.Mutex
 	items []*sortedQueueItem
@@ -13,7 +13,7 @@ type SortedQueue struct {
 	size  int
 }
 
-// NewSortedQueue TODO
+// NewSortedQueue returns a SortedQueue
 func NewSortedQueue() *SortedQueue {
 	q := &SortedQueue{
 		items: make([]*sortedQueueItem, 0, 256),
@@ -21,7 +21,7 @@ func NewSortedQueue() *SortedQueue {
 	return q
 }
 
-// Insert TODO
+// Insert inserts the item by the priority
 func (q *SortedQueue) Insert(value interface{}, Priority uint64) {
 	q.Lock()
 	defer q.Unlock()
@@ -49,7 +49,7 @@ func (q *SortedQueue) Insert(value interface{}, Priority uint64) {
 	q.size++
 }
 
-// Peek TODO
+// Peek fetch the top item without removing it
 func (q *SortedQueue) Peek() interface{} {
 	q.Lock()
 	defer q.Unlock()
@@ -61,7 +61,7 @@ func (q *SortedQueue) Peek() interface{} {
 	return item.value
 }
 
-// Pop TODO
+// Pop returns a item at the top of the queue
 func (q *SortedQueue) Pop() interface{} {
 	q.Lock()
 	defer q.Unlock()
@@ -80,7 +80,7 @@ func (q *SortedQueue) Pop() interface{} {
 	return item.value
 }
 
-// Size TODO
+// Size returns the number of items
 func (q *SortedQueue) Size() int {
 	q.Lock()
 	defer q.Unlock()
