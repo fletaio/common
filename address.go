@@ -9,13 +9,13 @@ import (
 	"github.com/mr-tron/base58/base58"
 )
 
-// AddressSize TODO
+// AddressSize is 20 bytes
 const AddressSize = 20
 
-// Address TODO
+// Address is the [AddressSize]byte with methods
 type Address [AddressSize]byte
 
-// NewAddress TODO
+// NewAddress returns a Address by the AccountCoordinate, by the ChainCoordinate and by the nonce
 func NewAddress(accCoord *Coordinate, chainCoord *Coordinate, nonce uint64) Address {
 	var addr Address
 	copy(addr[:], accCoord.Bytes())
@@ -28,7 +28,7 @@ func NewAddress(accCoord *Coordinate, chainCoord *Coordinate, nonce uint64) Addr
 	return addr
 }
 
-// WriteTo TODO
+// WriteTo is a serialization function
 func (addr *Address) WriteTo(w io.Writer) (int64, error) {
 	if n, err := w.Write(addr[:]); err != nil {
 		return int64(n), err
@@ -39,7 +39,7 @@ func (addr *Address) WriteTo(w io.Writer) (int64, error) {
 	}
 }
 
-// ReadFrom TODO
+// ReadFrom is a deserialization function
 func (addr *Address) ReadFrom(r io.Reader) (int64, error) {
 	if n, err := r.Read(addr[:]); err != nil {
 		return int64(n), err
@@ -50,24 +50,24 @@ func (addr *Address) ReadFrom(r io.Reader) (int64, error) {
 	}
 }
 
-// Equal TODO
+// Equal checks compare two values and returns true or false
 func (addr Address) Equal(b Address) bool {
 	return bytes.Equal(addr[:], b[:])
 }
 
-// String TODO
+// String returns a base58 value of the address
 func (addr Address) String() string {
 	return base58.Encode(bytes.TrimRight(addr[:], string([]byte{0})))
 }
 
-// Clone TODO
+// Clone returns the clonend value of it
 func (addr Address) Clone() Address {
 	var cp Address
 	copy(cp[:], addr[:])
 	return cp
 }
 
-// WithNonce TODO
+// WithNonce returns derive the address using the nonce
 func (addr Address) WithNonce(nonce uint64) Address {
 	var cp Address
 	copy(cp[:], addr[:])
@@ -75,7 +75,7 @@ func (addr Address) WithNonce(nonce uint64) Address {
 	return cp
 }
 
-// AddressFromString TODO
+// AddressFromString parse the address from the string
 func AddressFromString(str string) (Address, error) {
 	bs, err := base58.Decode(str)
 	if err != nil {
