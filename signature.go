@@ -36,7 +36,7 @@ func (sig *Signature) ReadFrom(r io.Reader) (int64, error) {
 	}
 }
 
-// Equal checks compare two values and returns true or false
+// Equal checks that two values is same or not
 func (sig Signature) Equal(b Signature) bool {
 	return bytes.Equal(sig[:], b[:])
 }

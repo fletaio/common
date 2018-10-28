@@ -67,7 +67,7 @@ func (crd *Coordinate) ReadFrom(r io.Reader) (int64, error) {
 	return 0, nil
 }
 
-// Equal checks compare two values and returns true or false
+// Equal checks that two values is same or not
 func (crd *Coordinate) Equal(b *Coordinate) bool {
 	return crd.Height == b.Height && crd.Index == b.Index
 }

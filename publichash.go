@@ -46,12 +46,12 @@ func (pubhash *PublicHash) ReadFrom(r io.Reader) (int64, error) {
 	}
 }
 
-// Equal checks compare two values and returns true or false
+// Equal checks that two values is same or not
 func (pubhash PublicHash) Equal(b PublicHash) bool {
 	return bytes.Equal(pubhash[:], b[:])
 }
 
-// String retuns the hex string of the public hash
+// String returns the hex string of the public hash
 func (pubhash PublicHash) String() string {
 	return hex.EncodeToString(pubhash[:])
 }

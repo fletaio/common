@@ -36,7 +36,7 @@ func (pubkey *PublicKey) ReadFrom(r io.Reader) (int64, error) {
 	}
 }
 
-// Equal checks compare two values and returns true or false
+// Equal checks that two values is same or not
 func (pubkey PublicKey) Equal(b PublicKey) bool {
 	return bytes.Equal(pubkey[:], b[:])
 }
