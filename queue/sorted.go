@@ -33,14 +33,14 @@ func (q *SortedQueue) Insert(value interface{}, Priority uint64) {
 		return Priority < q.items[q.head+i].priority
 	})
 	idx += q.head
-	if q.head > 0 {
-		if idx == len(q.items) {
+	if q.size < len(q.items) {
+		if q.head+q.size == len(q.items) {
 			copy(q.items[q.head-1:], q.items[q.head:])
 			idx--
+			q.head--
 		} else {
-			copy(q.items[q.head-1:idx], q.items[q.head:idx+1])
+			copy(q.items[idx+1:], q.items[idx:])
 		}
-		q.head--
 	} else {
 		q.items = append(q.items, item)
 		copy(q.items[idx+1:], q.items[idx:])
@@ -73,7 +73,7 @@ func (q *SortedQueue) Pop() interface{} {
 	q.items[q.head] = nil
 	q.head++
 	if q.head > 128 {
-		q.items = q.items[q.head:]
+		copy(q.items, q.items[q.head:])
 		q.head = 0
 	}
 	q.size--
