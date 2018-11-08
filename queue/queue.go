@@ -63,11 +63,13 @@ func (q *Queue) Pop() interface{} {
 	}
 	page := q.pages[0]
 	item := page.pop()
-	if page.size == 0 && len(q.pages) > 1 {
-		queuePagePool.Put(page)
-		q.pages = q.pages[1:]
+	if item != nil {
+		if page.size == 0 && len(q.pages) > 1 {
+			queuePagePool.Put(page)
+			q.pages = q.pages[1:]
+		}
+		q.size--
 	}
-	q.size--
 	return item
 }
 
