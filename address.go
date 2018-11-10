@@ -57,7 +57,10 @@ func (addr Address) Equal(b Address) bool {
 
 // String returns a base58 value of the address
 func (addr Address) String() string {
-	return base58.Encode(bytes.TrimRight(addr[:], string([]byte{0})))
+	bs := make([]byte, AddressSize+1)
+	bs[0] = addr.Checksum()
+	copy(bs[1:], addr[:])
+	return base58.Encode(append(bs[:7], bytes.TrimRight(bs[7:], string([]byte{0}))...))
 }
 
 // Clone returns the clonend value of it
@@ -75,13 +78,38 @@ func (addr Address) WithNonce(nonce uint64) Address {
 	return cp
 }
 
-// AddressFromString parse the address from the string
-func AddressFromString(str string) (Address, error) {
+// Checksum returns the checksum byte
+func (addr Address) Checksum() byte {
+	var cs byte
+	for _, c := range addr {
+		cs = cs ^ c
+	}
+	return cs
+}
+
+// ParseAddress parse the address from the string
+func ParseAddress(str string) (Address, error) {
 	bs, err := base58.Decode(str)
 	if err != nil {
 		return Address{}, err
 	}
+	if len(bs) != 7 && len(bs) != 13 && len(bs) != 21 {
+		return Address{}, ErrInvalidAddressFormat
+	}
+	cs := bs[0]
 	var addr Address
-	copy(addr[:], bs)
+	copy(addr[:], bs[1:])
+	if cs != addr.Checksum() {
+		return Address{}, ErrInvalidAddressCheckSum
+	}
 	return addr, nil
+}
+
+// MustParseAddress panic when error occurred
+func MustParseAddress(str string) Address {
+	addr, err := ParseAddress(str)
+	if err != nil {
+		//panic(err)
+	}
+	return addr
 }

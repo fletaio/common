@@ -6,7 +6,8 @@ import (
 
 // common errors
 var (
-	ErrInvalidAddressFormat = errors.New("invalid address format")
-	ErrInvalidTagFormat     = errors.New("invalid tag format")
-	ErrInvalidSignature     = errors.New("invalid signature")
+	ErrInvalidAddressFormat   = errors.New("invalid address format")
+	ErrInvalidAddressCheckSum = errors.New("invalid address checksum")
+	ErrInvalidTagFormat       = errors.New("invalid tag format")
+	ErrInvalidSignature       = errors.New("invalid signature")
 )
