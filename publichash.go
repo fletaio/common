@@ -2,11 +2,11 @@ package common
 
 import (
 	"bytes"
-	"encoding/hex"
 	"io"
 
 	"git.fleta.io/fleta/common/hash"
 	"git.fleta.io/fleta/common/util"
+	"github.com/mr-tron/base58/base58"
 )
 
 // PublicHashSize is 31 bytes
@@ -51,9 +51,9 @@ func (pubhash PublicHash) Equal(b PublicHash) bool {
 	return bytes.Equal(pubhash[:], b[:])
 }
 
-// String returns the hex string of the public hash
+// String returns a base58 value of the public hash
 func (pubhash PublicHash) String() string {
-	return hex.EncodeToString(pubhash[:])
+	return base58.Encode(bytes.TrimRight(pubhash[:], string([]byte{0})))
 }
 
 // Clone returns the clonend value of it
@@ -61,4 +61,24 @@ func (pubhash PublicHash) Clone() PublicHash {
 	var cp PublicHash
 	copy(cp[:], pubhash[:])
 	return cp
+}
+
+// ParsePublicHash parse the public hash from the string
+func ParsePublicHash(str string) (PublicHash, error) {
+	bs, err := base58.Decode(str)
+	if err != nil {
+		return PublicHash{}, err
+	}
+	var pubhash PublicHash
+	copy(pubhash[:], bs)
+	return pubhash, nil
+}
+
+// MustParsePublicHash panic when error occurred
+func MustParsePublicHash(str string) PublicHash {
+	pubhash, err := ParsePublicHash(str)
+	if err != nil {
+		panic(err)
+	}
+	return pubhash
 }
