@@ -33,24 +33,28 @@ func (q *SortedQueue) Insert(value interface{}, Priority uint64) {
 		return Priority < q.items[q.head+i].priority
 	})
 	idx += q.head
-	if q.size == len(q.items) {
-		q.items = append(q.items, item)
-		copy(q.items[idx+1:], q.items[idx:])
+	if q.head <= idx && idx < q.head+q.size && q.items[idx].priority == Priority {
+		q.items[idx] = item
 	} else {
-		last := q.head + q.size
-		if last == len(q.items) {
-			copy(q.items[q.head-1:], q.items[q.head:])
-			q.head--
-			idx--
-			if idx != last-1 {
-				copy(q.items[idx+1:], q.items[idx:last])
-			}
+		if q.size == len(q.items) {
+			q.items = append(q.items, item)
+			copy(q.items[idx+1:], q.items[idx:])
 		} else {
-			copy(q.items[idx+1:last+1], q.items[idx:last])
+			last := q.head + q.size
+			if last == len(q.items) {
+				copy(q.items[q.head-1:], q.items[q.head:])
+				q.head--
+				idx--
+				if idx != last-1 {
+					copy(q.items[idx+1:], q.items[idx:last])
+				}
+			} else {
+				copy(q.items[idx+1:last+1], q.items[idx:last])
+			}
 		}
+		q.items[idx] = item
+		q.size++
 	}
-	q.items[idx] = item
-	q.size++
 }
 
 // Peek fetch the top item without removing it
