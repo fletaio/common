@@ -57,10 +57,22 @@ func (addr Address) Equal(b Address) bool {
 
 // String returns a base58 value of the address
 func (addr Address) String() string {
-	bs := make([]byte, AddressSize+1)
-	bs[0] = addr.Checksum()
-	copy(bs[1:], addr[:])
-	return base58.Encode(append(bs[:7], bytes.TrimRight(bs[7:], string([]byte{0}))...))
+	var bs []byte
+	checksum := addr.Checksum()
+	result := bytes.TrimRight(addr[:], string([]byte{0}))
+	if len(result) < 7 {
+		bs = make([]byte, 7)
+		copy(bs[1:], result[:])
+	} else if len(result) < 13 {
+		bs = make([]byte, 13)
+		copy(bs[1:], result[:])
+	} else if len(result) < 21 {
+		bs := make([]byte, 21)
+		copy(bs[1:], result[:])
+	}
+	bs[0] = checksum
+
+	return base58.Encode(bs)
 }
 
 // Clone returns the clonend value of it
