@@ -58,15 +58,34 @@ func (q *SortedQueue) Insert(value interface{}, Priority uint64) {
 }
 
 // Peek fetch the top item without removing it
-func (q *SortedQueue) Peek() interface{} {
+func (q *SortedQueue) Peek() (interface{}, uint64) {
+	q.Lock()
+	defer q.Unlock()
+
+	if q.size == 0 {
+		return nil, 0
+	}
+	item := q.items[q.head]
+	return item.value, item.priority
+}
+
+// Find fetch the target priority item without removing it
+func (q *SortedQueue) Find(Priority uint64) interface{} {
 	q.Lock()
 	defer q.Unlock()
 
 	if q.size == 0 {
 		return nil
 	}
-	item := q.items[q.head]
-	return item.value
+	for i := q.head; i < q.head+q.size; i++ {
+		item := q.items[i]
+		if item.priority == Priority {
+			return item
+		} else if item.priority > Priority {
+			break
+		}
+	}
+	return nil
 }
 
 // Pop returns a item at the top of the queue
