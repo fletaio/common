@@ -6,15 +6,15 @@ import (
 
 // LinkedQueue is designed to allow users to remove the item by the key
 type LinkedQueue struct {
-	Head    *linkedItem
-	Tail    *linkedItem
-	keyHash map[hash.Hash256]*linkedItem
+	Head   *linkedItem
+	Tail   *linkedItem
+	keyMap map[hash.Hash256]*linkedItem
 }
 
 // NewLinkedQueue make a LinkedQueue
 func NewLinkedQueue() *LinkedQueue {
 	q := &LinkedQueue{
-		keyHash: map[hash.Hash256]*linkedItem{},
+		keyMap: map[hash.Hash256]*linkedItem{},
 	}
 	return q
 }
@@ -33,7 +33,7 @@ func (q *LinkedQueue) Push(Key hash.Hash256, item interface{}) {
 		q.Tail.Next = nd
 		q.Tail = nd
 	}
-	q.keyHash[Key] = nd
+	q.keyMap[Key] = nd
 }
 
 // Pop returns a item at the top of the queue
@@ -51,7 +51,7 @@ func (q *LinkedQueue) Pop() interface{} {
 	}
 	nd.Prev = nil
 	nd.Next = nil
-	delete(q.keyHash, nd.Key)
+	delete(q.keyMap, nd.Key)
 	return nd.Item
 }
 
@@ -60,7 +60,7 @@ func (q *LinkedQueue) Remove(Key hash.Hash256) interface{} {
 	if q.Head == nil {
 		return nil
 	}
-	nd, has := q.keyHash[Key]
+	nd, has := q.keyMap[Key]
 	if !has {
 		return nil
 	}
