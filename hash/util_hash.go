@@ -1,8 +1,10 @@
 package hash
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
+	"io"
 )
 
 // Hash returns the Hash256 value of the data
@@ -53,4 +55,13 @@ func MustParseHex(str string) Hash256 {
 		panic(err)
 	}
 	return h
+}
+
+// DoubleHashByWriterTo returns the result of Hash(io.Writer)
+func DoubleHashByWriterTo(w io.WriterTo) Hash256 {
+	var buffer bytes.Buffer
+	if _, err := w.WriteTo(&buffer); err != nil {
+		panic(err)
+	}
+	return DoubleHash(buffer.Bytes())
 }
