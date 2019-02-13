@@ -52,3 +52,26 @@ func (sig Signature) Clone() Signature {
 	copy(cp[:], sig[:])
 	return cp
 }
+
+// ParseSignature parse the public hash from the string
+func ParseSignature(str string) (Signature, error) {
+	if len(str) != SignatureSize*2 {
+		return Signature{}, ErrInvalidSignature
+	}
+	bs, err := hex.DecodeString(str)
+	if err != nil {
+		return Signature{}, err
+	}
+	var sig Signature
+	copy(sig[:], bs)
+	return sig, nil
+}
+
+// MustParseSignature panic when error occurred
+func MustParseSignature(str string) Signature {
+	sig, err := ParseSignature(str)
+	if err != nil {
+		panic(err)
+	}
+	return sig
+}

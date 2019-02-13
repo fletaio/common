@@ -61,3 +61,26 @@ func (pubkey PublicKey) Checksum() byte {
 	}
 	return cs
 }
+
+// ParsePublicKey parse the public hash from the string
+func ParsePublicKey(str string) (PublicKey, error) {
+	if len(str) != PublicKeySize*2 {
+		return PublicKey{}, ErrInvalidPublicKey
+	}
+	bs, err := hex.DecodeString(str)
+	if err != nil {
+		return PublicKey{}, err
+	}
+	var pubkey PublicKey
+	copy(pubkey[:], bs)
+	return pubkey, nil
+}
+
+// MustParsePublicKey panic when error occurred
+func MustParsePublicKey(str string) PublicKey {
+	pubkey, err := ParsePublicKey(str)
+	if err != nil {
+		panic(err)
+	}
+	return pubkey
+}

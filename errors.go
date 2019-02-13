@@ -10,5 +10,6 @@ var (
 	ErrInvalidAddressCheckSum = errors.New("invalid address checksum")
 	ErrInvalidTagFormat       = errors.New("invalid tag format")
 	ErrInvalidSignature       = errors.New("invalid signature")
+	ErrInvalidPublicKey       = errors.New("invalid public key")
 	ErrInvalidPublicHash      = errors.New("invalid public hash")
 )
