@@ -232,3 +232,16 @@ func ReadBool(r io.Reader) (bool, int64, error) {
 		return (v == 1), n, err
 	}
 }
+
+// FillBytes reads bytes from the reader until the given bytes array is filled
+func FillBytes(r io.Reader, bs []byte) error {
+	idx := 0
+	for idx < len(bs) {
+		if n, err := r.Read(bs[idx:]); err != nil {
+			return err
+		} else {
+			idx += n
+		}
+	}
+	return nil
+}
