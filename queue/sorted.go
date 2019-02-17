@@ -80,7 +80,7 @@ func (q *SortedQueue) Find(Priority uint64) interface{} {
 	for i := q.head; i < q.head+q.size; i++ {
 		item := q.items[i]
 		if item.priority == Priority {
-			return item
+			return item.value
 		} else if item.priority > Priority {
 			break
 		}
