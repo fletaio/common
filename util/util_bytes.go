@@ -121,54 +121,50 @@ func WriteBool(w io.Writer, b bool) (int64, error) {
 
 // ReadUint64 reads a uint64 number from the reader
 func ReadUint64(r io.Reader) (uint64, int64, error) {
+	var read int64
 	BNum := make([]byte, 8)
-	n, err := r.Read(BNum)
-	if err != nil {
-		return 0, int64(n), err
+	if n, err := FillBytes(r, BNum); err != nil {
+		return 0, read, err
+	} else {
+		read += n
 	}
-	if n != 8 {
-		return 0, int64(n), ErrInvalidLength
-	}
-	return binary.LittleEndian.Uint64(BNum), 8, nil
+	return binary.LittleEndian.Uint64(BNum), int64(read), nil
 }
 
 // ReadUint32 reads a uint32 number from the reader
 func ReadUint32(r io.Reader) (uint32, int64, error) {
+	var read int64
 	BNum := make([]byte, 4)
-	n, err := r.Read(BNum)
-	if err != nil {
-		return 0, int64(n), err
+	if n, err := FillBytes(r, BNum); err != nil {
+		return 0, read, err
+	} else {
+		read += n
 	}
-	if n != 4 {
-		return 0, int64(n), ErrInvalidLength
-	}
-	return binary.LittleEndian.Uint32(BNum), 4, nil
+	return binary.LittleEndian.Uint32(BNum), int64(read), nil
 }
 
 // ReadUint16 reads a uint16 number from the reader
 func ReadUint16(r io.Reader) (uint16, int64, error) {
+	var read int64
 	BNum := make([]byte, 2)
-	n, err := r.Read(BNum)
-	if err != nil {
-		return 0, int64(n), err
+	if n, err := FillBytes(r, BNum); err != nil {
+		return 0, read, err
+	} else {
+		read += n
 	}
-	if n != 2 {
-		return 0, int64(n), ErrInvalidLength
-	}
-	return binary.LittleEndian.Uint16(BNum), 2, nil
+	return binary.LittleEndian.Uint16(BNum), int64(read), nil
 }
 
 // ReadUint8 reads a uint8 number from the reader
 func ReadUint8(r io.Reader) (uint8, int64, error) {
+	var read int64
 	BNum := make([]byte, 1)
-	n, err := r.Read(BNum)
-	if err != nil {
-		return 0, int64(n), err
+	if n, err := FillBytes(r, BNum); err != nil {
+		return 0, read, err
+	} else {
+		read += n
 	}
-	if n != 1 {
-		return 0, int64(n), ErrInvalidLength
-	}
-	return uint8(BNum[0]), 1, nil
+	return uint8(BNum[0]), int64(read), nil
 }
 
 // ReadBytes reads a byte array from the reader
@@ -180,10 +176,10 @@ func ReadBytes(r io.Reader) ([]byte, int64, error) {
 	} else if Len < 254 {
 		read += n
 		bs = make([]byte, Len)
-		if n, err := r.Read(bs); err != nil {
+		if n, err := FillBytes(r, bs); err != nil {
 			return nil, read, err
 		} else {
-			read += int64(n)
+			read += n
 		}
 		return bs, read, nil
 	} else if Len == 254 {
@@ -192,10 +188,10 @@ func ReadBytes(r io.Reader) ([]byte, int64, error) {
 		} else {
 			read += n
 			bs = make([]byte, Len)
-			if n, err := r.Read(bs); err != nil {
+			if n, err := FillBytes(r, bs); err != nil {
 				return nil, read, err
 			} else {
-				read += int64(n)
+				read += n
 			}
 		}
 		return bs, read, nil
@@ -205,10 +201,10 @@ func ReadBytes(r io.Reader) ([]byte, int64, error) {
 		} else {
 			read += n
 			bs = make([]byte, Len)
-			if n, err := r.Read(bs); err != nil {
+			if n, err := FillBytes(r, bs); err != nil {
 				return nil, read, err
 			} else {
-				read += int64(n)
+				read += n
 			}
 		}
 		return bs, read, nil
@@ -234,14 +230,17 @@ func ReadBool(r io.Reader) (bool, int64, error) {
 }
 
 // FillBytes reads bytes from the reader until the given bytes array is filled
-func FillBytes(r io.Reader, bs []byte) error {
-	idx := 0
-	for idx < len(bs) {
-		if n, err := r.Read(bs[idx:]); err != nil {
-			return err
+func FillBytes(r io.Reader, bs []byte) (int64, error) {
+	var read int
+	for read < len(bs) {
+		if n, err := r.Read(bs[read:]); err != nil {
+			return int64(read), err
 		} else {
-			idx += n
+			read += n
 		}
 	}
-	return nil
+	if read != len(bs) {
+		return int64(read), ErrInvalidLength
+	}
+	return int64(read), nil
 }

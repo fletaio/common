@@ -27,13 +27,7 @@ func (sig *Signature) WriteTo(w io.Writer) (int64, error) {
 
 // ReadFrom is a deserialization function
 func (sig *Signature) ReadFrom(r io.Reader) (int64, error) {
-	if n, err := r.Read(sig[:]); err != nil {
-		return int64(n), err
-	} else if n != SignatureSize {
-		return int64(n), util.ErrInvalidLength
-	} else {
-		return int64(n), nil
-	}
+	return util.FillBytes(r, sig[:])
 }
 
 // Equal checks that two values is same or not
