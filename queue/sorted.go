@@ -26,7 +26,7 @@ func (q *SortedQueue) FindOrInsert(value interface{}, Priority uint64) interface
 	q.Lock()
 	defer q.Unlock()
 
-	if item := q.find(Priority); item != nil {
+	if item := q.findInternal(Priority); item != nil {
 		return item
 	}
 	q.insert(value, Priority)
@@ -78,10 +78,10 @@ func (q *SortedQueue) Peek() (interface{}, uint64) {
 	q.Lock()
 	defer q.Unlock()
 
-	return q.peek()
+	return q.peekInternal()
 }
 
-func (q *SortedQueue) peek() (interface{}, uint64) {
+func (q *SortedQueue) peekInternal() (interface{}, uint64) {
 	q.Lock()
 	defer q.Unlock()
 
@@ -97,10 +97,10 @@ func (q *SortedQueue) Find(Priority uint64) interface{} {
 	q.Lock()
 	defer q.Unlock()
 
-	return q.Find(Priority)
+	return q.findInternal(Priority)
 }
 
-func (q *SortedQueue) find(Priority uint64) interface{} {
+func (q *SortedQueue) findInternal(Priority uint64) interface{} {
 	if q.size == 0 {
 		return nil
 	}
@@ -121,14 +121,14 @@ func (q *SortedQueue) PopUntil(Priority uint64) interface{} {
 	defer q.Unlock()
 
 	for {
-		item, itemPriority := q.peek()
+		item, itemPriority := q.peekInternal()
 		if item == nil {
 			return nil
 		}
 		if itemPriority < Priority {
-			q.pop()
+			q.popInternal()
 		} else if itemPriority == Priority {
-			q.pop()
+			q.popInternal()
 			return item
 		} else {
 			return nil
@@ -141,10 +141,10 @@ func (q *SortedQueue) Pop() interface{} {
 	q.Lock()
 	defer q.Unlock()
 
-	return q.pop()
+	return q.popInternal()
 }
 
-func (q *SortedQueue) pop() interface{} {
+func (q *SortedQueue) popInternal() interface{} {
 	if q.size == 0 {
 		return nil
 	}
