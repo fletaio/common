@@ -21,11 +21,27 @@ func NewSortedQueue() *SortedQueue {
 	return q
 }
 
+// FindOrInsert finds the item of the priority if it exists or inserts the item by the priority
+func (q *SortedQueue) FindOrInsert(value interface{}, Priority uint64) interface{} {
+	q.Lock()
+	defer q.Unlock()
+
+	if item := q.find(Priority); item != nil {
+		return item
+	}
+	q.insert(value, Priority)
+	return nil
+}
+
 // Insert inserts the item by the priority
 func (q *SortedQueue) Insert(value interface{}, Priority uint64) {
 	q.Lock()
 	defer q.Unlock()
 
+	q.insert(value, Priority)
+}
+
+func (q *SortedQueue) insert(value interface{}, Priority uint64) {
 	item := sortedQueueItemPool.Get().(*sortedQueueItem)
 	item.value = value
 	item.priority = Priority
@@ -62,6 +78,13 @@ func (q *SortedQueue) Peek() (interface{}, uint64) {
 	q.Lock()
 	defer q.Unlock()
 
+	return q.peek()
+}
+
+func (q *SortedQueue) peek() (interface{}, uint64) {
+	q.Lock()
+	defer q.Unlock()
+
 	if q.size == 0 {
 		return nil, 0
 	}
@@ -74,6 +97,10 @@ func (q *SortedQueue) Find(Priority uint64) interface{} {
 	q.Lock()
 	defer q.Unlock()
 
+	return q.Find(Priority)
+}
+
+func (q *SortedQueue) find(Priority uint64) interface{} {
 	if q.size == 0 {
 		return nil
 	}
@@ -88,11 +115,36 @@ func (q *SortedQueue) Find(Priority uint64) interface{} {
 	return nil
 }
 
+// PopUntil returns a item at the top of the queue
+func (q *SortedQueue) PopUntil(Priority uint64) interface{} {
+	q.Lock()
+	defer q.Unlock()
+
+	for {
+		item, itemPriority := q.peek()
+		if item == nil {
+			return nil
+		}
+		if itemPriority < Priority {
+			q.pop()
+		} else if itemPriority == Priority {
+			q.pop()
+			return item
+		} else {
+			return nil
+		}
+	}
+}
+
 // Pop returns a item at the top of the queue
 func (q *SortedQueue) Pop() interface{} {
 	q.Lock()
 	defer q.Unlock()
 
+	return q.pop()
+}
+
+func (q *SortedQueue) pop() interface{} {
 	if q.size == 0 {
 		return nil
 	}
