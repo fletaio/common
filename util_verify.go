@@ -32,3 +32,26 @@ func VerifySignature(pubkey PublicKey, h hash.Hash256, sig Signature) error {
 	}
 	return nil
 }
+
+// ValidateSignaturesMajority validates signatures with the signed hash and checks majority
+func ValidateSignaturesMajority(signedHash hash.Hash256, sigs []Signature, KeyMap map[PublicHash]bool) error {
+	if len(sigs) != len(KeyMap)/2+1 {
+		return ErrInsufficientSignature
+	}
+	sigMap := map[PublicHash]bool{}
+	for _, sig := range sigs {
+		pubkey, err := RecoverPubkey(signedHash, sig)
+		if err != nil {
+			return err
+		}
+		pubhash := NewPublicHash(pubkey)
+		if !KeyMap[pubhash] {
+			return ErrInvalidSignature
+		}
+		sigMap[pubhash] = true
+	}
+	if len(sigMap) != len(sigs) {
+		return ErrDuplicatedSignature
+	}
+	return nil
+}

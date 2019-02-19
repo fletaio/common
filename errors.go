@@ -12,4 +12,6 @@ var (
 	ErrInvalidSignature       = errors.New("invalid signature")
 	ErrInvalidPublicKey       = errors.New("invalid public key")
 	ErrInvalidPublicHash      = errors.New("invalid public hash")
+	ErrInsufficientSignature  = errors.New("insufficient signature")
+	ErrDuplicatedSignature    = errors.New("duplicated signature")
 )
