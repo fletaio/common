@@ -82,9 +82,6 @@ func (q *SortedQueue) Peek() (interface{}, uint64) {
 }
 
 func (q *SortedQueue) peekInternal() (interface{}, uint64) {
-	q.Lock()
-	defer q.Unlock()
-
 	if q.size == 0 {
 		return nil, 0
 	}
