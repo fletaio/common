@@ -67,6 +67,22 @@ func (crd *Coordinate) ReadFrom(r io.Reader) (int64, error) {
 	return 0, nil
 }
 
+// UnmarshalJSON is a unmarshaler function
+func (crd *Coordinate) UnmarshalJSON(bs []byte) error {
+	v, err := ParseCoordinate(string(bs))
+	if err != nil {
+		return err
+	}
+	crd.Height = v.Height
+	crd.Index = v.Index
+	return nil
+}
+
+// MarshalJSON is a marshaler function
+func (crd *Coordinate) MarshalJSON() ([]byte, error) {
+	return []byte(crd.String()), nil
+}
+
 // Equal checks that two values is same or not
 func (crd *Coordinate) Equal(b *Coordinate) bool {
 	return crd.Height == b.Height && crd.Index == b.Index
@@ -96,4 +112,29 @@ func (crd *Coordinate) ID() uint64 {
 // String returns a hex value of the byte array
 func (crd *Coordinate) String() string {
 	return hex.EncodeToString(crd.Bytes())
+}
+
+// ParseCoordinate parse the public hash from the string
+func ParseCoordinate(str string) (*Coordinate, error) {
+	if len(str) != CoordinateSize*2 {
+		return nil, ErrInvalidCoordinateFormat
+	}
+	bs, err := hex.DecodeString(str)
+	if err != nil {
+		return nil, err
+	}
+	coord := &Coordinate{
+		Height: binary.LittleEndian.Uint32(bs),
+		Index:  binary.LittleEndian.Uint16(bs[4:]),
+	}
+	return coord, nil
+}
+
+// MustParseCoordinate panic when error occurred
+func MustParseCoordinate(str string) *Coordinate {
+	coord, err := ParseCoordinate(str)
+	if err != nil {
+		panic(err)
+	}
+	return coord
 }

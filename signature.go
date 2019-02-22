@@ -30,6 +30,27 @@ func (sig *Signature) ReadFrom(r io.Reader) (int64, error) {
 	return util.FillBytes(r, sig[:])
 }
 
+// UnmarshalJSON is a unmarshaler function
+func (sig *Signature) UnmarshalJSON(bs []byte) error {
+	if len(bs) < 3 {
+		return ErrInvalidSignatureFormat
+	}
+	if bs[0] != '"' || bs[len(bs)-1] != '"' {
+		return ErrInvalidSignatureFormat
+	}
+	v, err := ParseSignature(string(bs[1 : len(bs)-1]))
+	if err != nil {
+		return err
+	}
+	copy(sig[:], v[:])
+	return nil
+}
+
+// MarshalJSON is a marshaler function
+func (sig *Signature) MarshalJSON() ([]byte, error) {
+	return []byte(`"` + sig.String() + `"`), nil
+}
+
 // Equal checks that two values is same or not
 func (sig Signature) Equal(b Signature) bool {
 	return bytes.Equal(sig[:], b[:])
@@ -50,7 +71,7 @@ func (sig Signature) Clone() Signature {
 // ParseSignature parse the public hash from the string
 func ParseSignature(str string) (Signature, error) {
 	if len(str) != SignatureSize*2 {
-		return Signature{}, ErrInvalidSignature
+		return Signature{}, ErrInvalidSignatureFormat
 	}
 	bs, err := hex.DecodeString(str)
 	if err != nil {

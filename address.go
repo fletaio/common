@@ -39,6 +39,27 @@ func (addr *Address) WriteTo(w io.Writer) (int64, error) {
 	}
 }
 
+// UnmarshalJSON is a unmarshaler function
+func (addr *Address) UnmarshalJSON(bs []byte) error {
+	if len(bs) < 3 {
+		return ErrInvalidAddressFormat
+	}
+	if bs[0] != '"' || bs[len(bs)-1] != '"' {
+		return ErrInvalidAddressFormat
+	}
+	v, err := ParseAddress(string(bs[1 : len(bs)-1]))
+	if err != nil {
+		return err
+	}
+	copy(addr[:], v[:])
+	return nil
+}
+
+// MarshalJSON is a marshaler function
+func (addr *Address) MarshalJSON() ([]byte, error) {
+	return []byte(`"` + addr.String() + `"`), nil
+}
+
 // ReadFrom is a deserialization function
 func (addr *Address) ReadFrom(r io.Reader) (int64, error) {
 	return util.FillBytes(r, addr[:])

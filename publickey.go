@@ -30,6 +30,27 @@ func (pubkey *PublicKey) ReadFrom(r io.Reader) (int64, error) {
 	return util.FillBytes(r, pubkey[:])
 }
 
+// UnmarshalJSON is a unmarshaler function
+func (pubkey *PublicKey) UnmarshalJSON(bs []byte) error {
+	if len(bs) < 3 {
+		return ErrInvalidPublicKeyFormat
+	}
+	if bs[0] != '"' || bs[len(bs)-1] != '"' {
+		return ErrInvalidPublicKeyFormat
+	}
+	v, err := ParsePublicKey(string(bs[1 : len(bs)-1]))
+	if err != nil {
+		return err
+	}
+	copy(pubkey[:], v[:])
+	return nil
+}
+
+// MarshalJSON is a marshaler function
+func (pubkey *PublicKey) MarshalJSON() ([]byte, error) {
+	return []byte(`"` + pubkey.String() + `"`), nil
+}
+
 // Equal checks that two values is same or not
 func (pubkey PublicKey) Equal(b PublicKey) bool {
 	return bytes.Equal(pubkey[:], b[:])
@@ -59,7 +80,7 @@ func (pubkey PublicKey) Checksum() byte {
 // ParsePublicKey parse the public hash from the string
 func ParsePublicKey(str string) (PublicKey, error) {
 	if len(str) != PublicKeySize*2 {
-		return PublicKey{}, ErrInvalidPublicKey
+		return PublicKey{}, ErrInvalidPublicKeyFormat
 	}
 	bs, err := hex.DecodeString(str)
 	if err != nil {

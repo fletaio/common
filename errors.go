@@ -6,12 +6,14 @@ import (
 
 // common errors
 var (
-	ErrInvalidAddressFormat   = errors.New("invalid address format")
-	ErrInvalidAddressCheckSum = errors.New("invalid address checksum")
-	ErrInvalidTagFormat       = errors.New("invalid tag format")
-	ErrInvalidSignature       = errors.New("invalid signature")
-	ErrInvalidPublicKey       = errors.New("invalid public key")
-	ErrInvalidPublicHash      = errors.New("invalid public hash")
-	ErrInsufficientSignature  = errors.New("insufficient signature")
-	ErrDuplicatedSignature    = errors.New("duplicated signature")
+	ErrInvalidAddressFormat    = errors.New("invalid address format")
+	ErrInvalidAddressCheckSum  = errors.New("invalid address checksum")
+	ErrInvalidCoordinateFormat = errors.New("invalid coordinate format")
+	ErrInvalidSignatureFormat  = errors.New("invalid signature format")
+	ErrInvalidSignature        = errors.New("invalid signature")
+	ErrInvalidPublicKeyFormat  = errors.New("invalid public key format")
+	ErrInvalidPublicHash       = errors.New("invalid public hash")
+	ErrInvalidPublicHashFormat = errors.New("invalid public hash format")
+	ErrInsufficientSignature   = errors.New("insufficient signature")
+	ErrDuplicatedSignature     = errors.New("duplicated signature")
 )
