@@ -30,6 +30,11 @@ func (hash *Hash256) ReadFrom(r io.Reader) (int64, error) {
 	return util.FillBytes(r, hash[:])
 }
 
+// MarshalJSON is a marshaler function
+func (hash *Hash256) MarshalJSON() ([]byte, error) {
+	return []byte(`"` + hash.String() + `"`), nil
+}
+
 // UnmarshalJSON is a unmarshaler function
 func (hash *Hash256) UnmarshalJSON(bs []byte) error {
 	if len(bs) < 3 {
@@ -44,11 +49,6 @@ func (hash *Hash256) UnmarshalJSON(bs []byte) error {
 	}
 	copy(hash[:], v[:])
 	return nil
-}
-
-// MarshalJSON is a marshaler function
-func (hash *Hash256) MarshalJSON() ([]byte, error) {
-	return []byte(`"` + hash.String() + `"`), nil
 }
 
 // Equal checks that two values is same or not

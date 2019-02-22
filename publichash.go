@@ -35,6 +35,16 @@ func (pubhash *PublicHash) WriteTo(w io.Writer) (int64, error) {
 	}
 }
 
+// ReadFrom is a deserialization function
+func (pubhash *PublicHash) ReadFrom(r io.Reader) (int64, error) {
+	return util.FillBytes(r, pubhash[:])
+}
+
+// MarshalJSON is a marshaler function
+func (pubhash *PublicHash) MarshalJSON() ([]byte, error) {
+	return []byte(`"` + pubhash.String() + `"`), nil
+}
+
 // UnmarshalJSON is a unmarshaler function
 func (pubhash *PublicHash) UnmarshalJSON(bs []byte) error {
 	if len(bs) < 3 {
@@ -49,16 +59,6 @@ func (pubhash *PublicHash) UnmarshalJSON(bs []byte) error {
 	}
 	copy(pubhash[:], v[:])
 	return nil
-}
-
-// MarshalJSON is a marshaler function
-func (pubhash *PublicHash) MarshalJSON() ([]byte, error) {
-	return []byte(`"` + pubhash.String() + `"`), nil
-}
-
-// ReadFrom is a deserialization function
-func (pubhash *PublicHash) ReadFrom(r io.Reader) (int64, error) {
-	return util.FillBytes(r, pubhash[:])
 }
 
 // Equal checks that two values is same or not

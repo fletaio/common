@@ -30,6 +30,11 @@ func (sig *Signature) ReadFrom(r io.Reader) (int64, error) {
 	return util.FillBytes(r, sig[:])
 }
 
+// MarshalJSON is a marshaler function
+func (sig *Signature) MarshalJSON() ([]byte, error) {
+	return []byte(`"` + sig.String() + `"`), nil
+}
+
 // UnmarshalJSON is a unmarshaler function
 func (sig *Signature) UnmarshalJSON(bs []byte) error {
 	if len(bs) < 3 {
@@ -44,11 +49,6 @@ func (sig *Signature) UnmarshalJSON(bs []byte) error {
 	}
 	copy(sig[:], v[:])
 	return nil
-}
-
-// MarshalJSON is a marshaler function
-func (sig *Signature) MarshalJSON() ([]byte, error) {
-	return []byte(`"` + sig.String() + `"`), nil
 }
 
 // Equal checks that two values is same or not

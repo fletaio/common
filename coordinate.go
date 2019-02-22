@@ -67,20 +67,26 @@ func (crd *Coordinate) ReadFrom(r io.Reader) (int64, error) {
 	return 0, nil
 }
 
+// MarshalJSON is a marshaler function
+func (crd *Coordinate) MarshalJSON() ([]byte, error) {
+	return []byte(`"` + crd.String() + `"`), nil
+}
+
 // UnmarshalJSON is a unmarshaler function
 func (crd *Coordinate) UnmarshalJSON(bs []byte) error {
-	v, err := ParseCoordinate(string(bs))
+	if len(bs) < 3 {
+		return ErrInvalidCoordinateFormat
+	}
+	if bs[0] != '"' || bs[len(bs)-1] != '"' {
+		return ErrInvalidCoordinateFormat
+	}
+	v, err := ParseCoordinate(string(bs[1 : len(bs)-1]))
 	if err != nil {
 		return err
 	}
 	crd.Height = v.Height
 	crd.Index = v.Index
 	return nil
-}
-
-// MarshalJSON is a marshaler function
-func (crd *Coordinate) MarshalJSON() ([]byte, error) {
-	return []byte(crd.String()), nil
 }
 
 // Equal checks that two values is same or not

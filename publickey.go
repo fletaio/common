@@ -30,6 +30,11 @@ func (pubkey *PublicKey) ReadFrom(r io.Reader) (int64, error) {
 	return util.FillBytes(r, pubkey[:])
 }
 
+// MarshalJSON is a marshaler function
+func (pubkey *PublicKey) MarshalJSON() ([]byte, error) {
+	return []byte(`"` + pubkey.String() + `"`), nil
+}
+
 // UnmarshalJSON is a unmarshaler function
 func (pubkey *PublicKey) UnmarshalJSON(bs []byte) error {
 	if len(bs) < 3 {
@@ -44,11 +49,6 @@ func (pubkey *PublicKey) UnmarshalJSON(bs []byte) error {
 	}
 	copy(pubkey[:], v[:])
 	return nil
-}
-
-// MarshalJSON is a marshaler function
-func (pubkey *PublicKey) MarshalJSON() ([]byte, error) {
-	return []byte(`"` + pubkey.String() + `"`), nil
 }
 
 // Equal checks that two values is same or not
