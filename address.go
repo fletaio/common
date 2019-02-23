@@ -29,7 +29,7 @@ func NewAddress(accCoord *Coordinate, chainCoord *Coordinate, nonce uint64) Addr
 }
 
 // WriteTo is a serialization function
-func (addr *Address) WriteTo(w io.Writer) (int64, error) {
+func (addr Address) WriteTo(w io.Writer) (int64, error) {
 	if n, err := w.Write(addr[:]); err != nil {
 		return int64(n), err
 	} else if n != AddressSize {
@@ -39,8 +39,13 @@ func (addr *Address) WriteTo(w io.Writer) (int64, error) {
 	}
 }
 
+// ReadFrom is a deserialization function
+func (addr *Address) ReadFrom(r io.Reader) (int64, error) {
+	return util.FillBytes(r, addr[:])
+}
+
 // MarshalJSON is a marshaler function
-func (addr *Address) MarshalJSON() ([]byte, error) {
+func (addr Address) MarshalJSON() ([]byte, error) {
 	return []byte(`"` + addr.String() + `"`), nil
 }
 
@@ -58,11 +63,6 @@ func (addr *Address) UnmarshalJSON(bs []byte) error {
 	}
 	copy(addr[:], v[:])
 	return nil
-}
-
-// ReadFrom is a deserialization function
-func (addr *Address) ReadFrom(r io.Reader) (int64, error) {
-	return util.FillBytes(r, addr[:])
 }
 
 // Equal checks that two values is same or not

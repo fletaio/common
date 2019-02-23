@@ -15,7 +15,7 @@ const PublicKeySize = 33
 type PublicKey [PublicKeySize]byte
 
 // WriteTo is a serialization function
-func (pubkey *PublicKey) WriteTo(w io.Writer) (int64, error) {
+func (pubkey PublicKey) WriteTo(w io.Writer) (int64, error) {
 	if n, err := w.Write(pubkey[:]); err != nil {
 		return int64(n), err
 	} else if n != PublicKeySize {
@@ -31,7 +31,7 @@ func (pubkey *PublicKey) ReadFrom(r io.Reader) (int64, error) {
 }
 
 // MarshalJSON is a marshaler function
-func (pubkey *PublicKey) MarshalJSON() ([]byte, error) {
+func (pubkey PublicKey) MarshalJSON() ([]byte, error) {
 	return []byte(`"` + pubkey.String() + `"`), nil
 }
 

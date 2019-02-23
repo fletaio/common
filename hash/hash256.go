@@ -15,7 +15,7 @@ const Hash256Size = 32
 type Hash256 [Hash256Size]byte
 
 // WriteTo is a sereialization function
-func (hash *Hash256) WriteTo(w io.Writer) (int64, error) {
+func (hash Hash256) WriteTo(w io.Writer) (int64, error) {
 	if n, err := w.Write(hash[:]); err != nil {
 		return int64(n), err
 	} else if n != Hash256Size {
@@ -31,7 +31,7 @@ func (hash *Hash256) ReadFrom(r io.Reader) (int64, error) {
 }
 
 // MarshalJSON is a marshaler function
-func (hash *Hash256) MarshalJSON() ([]byte, error) {
+func (hash Hash256) MarshalJSON() ([]byte, error) {
 	return []byte(`"` + hash.String() + `"`), nil
 }
 

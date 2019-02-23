@@ -25,7 +25,7 @@ func NewPublicHash(pubkey PublicKey) PublicHash {
 }
 
 // WriteTo is a serialization function
-func (pubhash *PublicHash) WriteTo(w io.Writer) (int64, error) {
+func (pubhash PublicHash) WriteTo(w io.Writer) (int64, error) {
 	if n, err := w.Write(pubhash[:]); err != nil {
 		return int64(n), err
 	} else if n != PublicHashSize {
@@ -41,7 +41,7 @@ func (pubhash *PublicHash) ReadFrom(r io.Reader) (int64, error) {
 }
 
 // MarshalJSON is a marshaler function
-func (pubhash *PublicHash) MarshalJSON() ([]byte, error) {
+func (pubhash PublicHash) MarshalJSON() ([]byte, error) {
 	return []byte(`"` + pubhash.String() + `"`), nil
 }
 

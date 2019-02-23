@@ -15,7 +15,7 @@ const SignatureSize = 65
 type Signature [SignatureSize]byte
 
 // WriteTo is a serialization function
-func (sig *Signature) WriteTo(w io.Writer) (int64, error) {
+func (sig Signature) WriteTo(w io.Writer) (int64, error) {
 	if n, err := w.Write(sig[:]); err != nil {
 		return int64(n), err
 	} else if n != SignatureSize {
@@ -31,7 +31,7 @@ func (sig *Signature) ReadFrom(r io.Reader) (int64, error) {
 }
 
 // MarshalJSON is a marshaler function
-func (sig *Signature) MarshalJSON() ([]byte, error) {
+func (sig Signature) MarshalJSON() ([]byte, error) {
 	return []byte(`"` + sig.String() + `"`), nil
 }
 
