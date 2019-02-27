@@ -66,6 +66,11 @@ func (pubhash PublicHash) Equal(b PublicHash) bool {
 	return bytes.Equal(pubhash[:], b[:])
 }
 
+// Less returns the value is less or not
+func (pubhash PublicHash) Less(b PublicHash) bool {
+	return bytes.Compare(pubhash[:], b[:]) < 0
+}
+
 // String returns a base58 value of the public hash
 func (pubhash PublicHash) String() string {
 	return base58.Encode(bytes.TrimRight(pubhash[:], string([]byte{0})))
