@@ -237,6 +237,9 @@ func FillBytes(r io.Reader, bs []byte) (int64, error) {
 			return int64(read), err
 		} else {
 			read += n
+			if read >= len(bs) {
+				break
+			}
 			if n <= 0 {
 				return int64(read), ErrInvalidLength
 			}
