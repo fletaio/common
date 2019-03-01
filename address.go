@@ -9,19 +9,16 @@ import (
 	"github.com/mr-tron/base58/base58"
 )
 
-// AddressSize is 20 bytes
-const AddressSize = 20
+// AddressSize is 14 bytes
+const AddressSize = 14
 
 // Address is the [AddressSize]byte with methods
 type Address [AddressSize]byte
 
-// NewAddress returns a Address by the AccountCoordinate, by the ChainCoordinate and by the nonce
-func NewAddress(accCoord *Coordinate, chainCoord *Coordinate, nonce uint64) Address {
+// NewAddress returns a Address by the AccountCoordinate, by the nonce
+func NewAddress(accCoord *Coordinate, nonce uint64) Address {
 	var addr Address
 	copy(addr[:], accCoord.Bytes())
-	if chainCoord != nil && (chainCoord.Height > 0 || chainCoord.Index > 0) || nonce > 0 {
-		copy(addr[6:], chainCoord.Bytes())
-	}
 	if nonce > 0 {
 		binary.LittleEndian.PutUint64(addr[12:], nonce)
 	}
@@ -81,9 +78,6 @@ func (addr Address) String() string {
 	} else if len(result) < 13 {
 		bs = make([]byte, 13)
 		copy(bs[1:], result[:])
-	} else if len(result) < 21 {
-		bs := make([]byte, 21)
-		copy(bs[1:], result[:])
 	}
 	bs[0] = checksum
 
@@ -120,7 +114,7 @@ func ParseAddress(str string) (Address, error) {
 	if err != nil {
 		return Address{}, err
 	}
-	if len(bs) != 7 && len(bs) != 13 && len(bs) != 21 {
+	if len(bs) != 7 && len(bs) != 13 {
 		return Address{}, ErrInvalidAddressFormat
 	}
 	cs := bs[0]
