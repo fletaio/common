@@ -8,7 +8,7 @@ import (
 // ItemExpireHandler handles a group expire event
 type ItemExpireHandler interface {
 	// OnItemExpired is called when the item is expired
-	OnItemExpired(interval time.Duration, key string, item interface{})
+	OnItemExpired(interval time.Duration, key string, item interface{}, IsLast bool)
 }
 
 // ExpireQueue provides sequential expirations by groups
@@ -57,14 +57,18 @@ func (q *ExpireQueue) AddGroup(interval time.Duration) {
 				q.Unlock()
 
 				if len(expiredMap) > 0 {
+					q.Lock()
+					IsLast := idx+1 == len(q.groups)
+					q.Unlock()
+
 					for _, h := range q.handlers {
 						for k, v := range expiredMap {
-							h.OnItemExpired(g.Interval, k, v)
+							h.OnItemExpired(g.Interval, k, v, IsLast)
 						}
 					}
 
 					q.Lock()
-					if idx+1 < len(q.groups) {
+					if !IsLast {
 						next := q.groups[idx+1]
 						for k, v := range expiredMap {
 							next.itemMap[k] = &groupItem{
