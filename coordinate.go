@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"io"
 
-	"git.fleta.io/fleta/common/util"
+	"github.com/fletaio/common/util"
 )
 
 // CoordinateSize is 6 bytes

@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"io"
 
-	"git.fleta.io/fleta/common/util"
+	"github.com/fletaio/common/util"
 )
 
 // Hash256Size is 32 bytes

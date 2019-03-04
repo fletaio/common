@@ -5,7 +5,7 @@ import (
 	"encoding/binary"
 	"io"
 
-	"git.fleta.io/fleta/common/util"
+	"github.com/fletaio/common/util"
 	"github.com/mr-tron/base58/base58"
 )
 

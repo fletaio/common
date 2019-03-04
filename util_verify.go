@@ -4,8 +4,8 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 
-	ecrypto "git.fleta.io/fleta/common/crypto"
-	"git.fleta.io/fleta/common/hash"
+	ecrypto "github.com/fletaio/common/crypto"
+	"github.com/fletaio/common/hash"
 )
 
 // RecoverPubkey recover the public key using the hash value and the signature
