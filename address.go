@@ -20,7 +20,7 @@ func NewAddress(accCoord *Coordinate, nonce uint64) Address {
 	var addr Address
 	copy(addr[:], accCoord.Bytes())
 	if nonce > 0 {
-		binary.LittleEndian.PutUint64(addr[12:], nonce)
+		binary.LittleEndian.PutUint64(addr[6:], nonce)
 	}
 	return addr
 }
@@ -95,7 +95,7 @@ func (addr Address) Clone() Address {
 func (addr Address) WithNonce(nonce uint64) Address {
 	var cp Address
 	copy(cp[:], addr[:])
-	binary.LittleEndian.PutUint64(cp[12:], nonce)
+	binary.LittleEndian.PutUint64(cp[6:], nonce)
 	return cp
 }
 
