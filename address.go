@@ -108,6 +108,13 @@ func (addr Address) Checksum() byte {
 	return cs
 }
 
+// Coordinate returns the coordinate of the address
+func (addr Address) Coordinate() *Coordinate {
+	var coord Coordinate
+	coord.SetBytes(addr[:CoordinateSize])
+	return &coord
+}
+
 // ParseAddress parse the address from the string
 func ParseAddress(str string) (Address, error) {
 	bs, err := base58.Decode(str)
@@ -130,7 +137,7 @@ func ParseAddress(str string) (Address, error) {
 func MustParseAddress(str string) Address {
 	addr, err := ParseAddress(str)
 	if err != nil {
-		//panic(err)
+		panic(err)
 	}
 	return addr
 }

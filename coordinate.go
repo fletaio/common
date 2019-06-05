@@ -104,10 +104,20 @@ func (crd *Coordinate) Clone() *Coordinate {
 
 // Bytes returns a byte array
 func (crd *Coordinate) Bytes() []byte {
-	bs := make([]byte, 6)
+	bs := make([]byte, CoordinateSize)
 	binary.LittleEndian.PutUint32(bs, crd.Height)
 	binary.LittleEndian.PutUint16(bs[4:], crd.Index)
 	return bs
+}
+
+// SetBytes updates the coordinate using given bytes
+func (crd *Coordinate) SetBytes(bs []byte) error {
+	if len(bs) != CoordinateSize {
+		return ErrInvalidCoordinateBytesLength
+	}
+	crd.Height = binary.LittleEndian.Uint32(bs)
+	crd.Index = binary.LittleEndian.Uint16(bs[4:])
+	return nil
 }
 
 // ID returns a compacted id
